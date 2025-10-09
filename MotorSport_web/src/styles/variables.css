@@ -1,0 +1,32 @@
+/* ================================
+   🌞 Variables Modo Claro
+   ================================ */
+
+:root {
+  /* Colores */
+  --color-primary: #FFD60A;
+  --color-secondary: #14213D;
+  --background-main: #FFFFFF;
+  --background-alt: #F8F9FA;
+  --text-primary: #212529;
+  --text-secondary: #6C757D;
+  --accent: #0056D2;
+  --hover-color: #E6C309;
+  --active-color: #CCB308;
+  --disabled-bg: #E9ECEF;
+  --disabled-text: #ADB5BD;
+  --success: #28A745;
+  --error: #DC3545;
+  --warning: #FFC107;
+  --border-radius: 0.5rem;
+  --border-color: #CED4DA;
+  --box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+
+  /* Tipografía */
+  --font-primary: 'Inter', Roboto, sans-serif;
+  --font-size-h1: 3rem;   /* 48px */
+  --font-size-h2: 2rem;   /* 32px */
+  --font-size-h3: 1.5rem; /* 24px */
+  --font-size-body: 1rem; /* 16px */
+  --font-size-caption: 0.875rem; /* 14px */
+}

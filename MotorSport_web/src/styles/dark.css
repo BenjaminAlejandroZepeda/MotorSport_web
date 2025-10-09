@@ -1,0 +1,23 @@
+/* ================================
+   🌑 Variables Modo Oscuro
+   ================================ */
+
+:root.dark {
+  --color-primary: #FFD60A;
+  --color-secondary: #F8F9FA;
+  --background-main: #0D0D0D;
+  --background-alt: #1C1C1E;
+  --text-primary: #F8F9FA;
+  --text-secondary: #CED4DA;
+  --accent: #4DA3FF;
+  --hover-color: #E6C309;
+  --active-color: #CCB308;
+  --disabled-bg: #E9ECEF;
+  --disabled-text: #ADB5BD;
+  --success: #28A745;
+  --error: #DC3545;
+  --warning: #FFC107;
+  --border-radius: 0.5rem;
+  --border-color: #2B2B2E;
+  --box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}

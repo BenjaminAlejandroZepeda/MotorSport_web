@@ -1,0 +1,188 @@
+@import url('./variables.css');
+
+/* ================================
+   🌞 Estilos Globales
+   ================================ */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-family: var(--font-primary);
+  background-color: var(--background-main);
+  color: var(--text-primary);
+  transition: all 0.3s ease;
+}
+
+body {
+  background-color: var(--background-main);
+  color: var(--text-primary);
+  line-height: 1.6;
+  transition: all 0.3s ease;
+}
+
+/* Tipografía */
+h1 { font-size: var(--font-size-h1); font-weight: 700; }
+h2 { font-size: var(--font-size-h2); font-weight: 600; }
+h3 { font-size: var(--font-size-h3); font-weight: 600; }
+p { font-size: var(--font-size-body); font-weight: 400; }
+small, .caption { font-size: var(--font-size-caption); font-weight: 500; color: var(--text-secondary); }
+
+/* Botones */
+button {
+  font-size: var(--font-size-body);
+  font-weight: 500;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+button.primary {
+  background-color: var(--color-primary);
+  color: var(--color-secondary);
+  border: none;
+}
+button.primary:hover { background-color: var(--hover-color); }
+button.primary:focus {
+  outline: 2px solid var(--color-primary);
+  box-shadow: 0 0 6px var(--color-primary);
+}
+button.primary:disabled {
+  background-color: var(--disabled-bg);
+  color: var(--disabled-text);
+}
+
+button.secondary {
+  background-color: transparent;
+  border: 1px solid var(--color-secondary);
+  color: var(--color-secondary);
+}
+button.secondary:hover { background-color: var(--background-alt); }
+
+button.alert {
+  background-color: var(--error);
+  color: #fff;
+}
+button.alert:hover { background-color: #C82333; }
+
+/* Formularios */
+input, select, textarea {
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  padding: 0.5rem 1rem;
+  font-size: var(--font-size-body);
+  color: var(--text-primary);
+  background-color: var(--background-main);
+  transition: all 0.2s ease;
+}
+input::placeholder { color: var(--text-secondary); }
+input:focus {
+  border: 2px solid var(--color-primary);
+  box-shadow: 0 0 6px rgba(255, 214, 10, 0.4);
+  outline: none;
+}
+label { color: var(--text-secondary); font-size: var(--font-size-caption); }
+
+/* Tarjetas */
+.card {
+  background-color: var(--background-alt);
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  transition: all 0.3s ease;
+}
+.card:hover {
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+/* Navbar */
+.navbar {
+  background-color: var(--background-main);
+  border-bottom: 1px solid var(--border-color);
+  transition: all 0.3s ease;
+}
+.navbar a {
+  color: var(--text-primary);
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+}
+.navbar a:hover {
+  color: var(--color-primary);
+  text-decoration: underline;
+}
+
+/* Hero */
+.hero {
+  position: relative;
+  color: #fff;
+}
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0,0,0,0.4);
+}
+.hero h1 { color: #fff; }
+
+/* Footer */
+.footer {
+  background-color: var(--color-secondary);
+  color: var(--text-primary);
+  padding: 2rem 1rem;
+}
+.footer a {
+  color: var(--text-primary);
+}
+.footer a:hover {
+  color: var(--color-primary);
+}
+/* ================================
+   Ajustes específicos para modo oscuro
+   ================================ */
+:root.dark {
+  /* Textos generales */
+  color: #F8F9FA;
+
+  /* Formularios y labels */
+}
+:root.dark h1, 
+:root.dark h2, 
+:root.dark h3, 
+:root.dark p, 
+:root.dark small, 
+:root.dark label, 
+:root.dark .form-text, 
+:root.dark .caption, 
+:root.dark .form-link {
+  color: #F8F9FA !important;
+}
+
+/* Links en modo oscuro */
+:root.dark a {
+  color: #4DA3FF !important; /* azul vibrante */
+}
+
+/* Inputs y textarea en modo oscuro */
+:root.dark input,
+:root.dark select,
+:root.dark textarea {
+  color: #F8F9FA;
+  background-color: #1C1C1E;
+  border-color: #2B2B2E;
+}
+
+/* Placeholders en modo oscuro */
+:root.dark ::placeholder {
+  color: #CED4DA;
+}
+
+/* Botones */
+:root.dark button.primary {
+  background-color: #FFD60A;
+  color: #14213D;
+}
+:root.dark button.primary:hover {
+  background-color: #E6C309;
+}
