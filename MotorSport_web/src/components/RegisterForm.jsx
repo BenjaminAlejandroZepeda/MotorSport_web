@@ -18,9 +18,9 @@ export default function RegisterForm() {
       return;
     }
 
-    const newUser = { username, password, role: "user" };
-    const updatedUsers = [...users, newUser];
-    localStorage.setItem("users", JSON.stringify(updatedUsers));
+    const newUser = { username, password, role: "user" }; // siempre user
+    users.push(newUser);
+    localStorage.setItem("users", JSON.stringify(users));
 
     setMessage("Usuario registrado con éxito. Puedes iniciar sesión.");
     setTimeout(() => navigate("/"), 2000);

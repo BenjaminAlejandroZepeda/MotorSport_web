@@ -1,21 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Form, Button, Alert, Container, Card } from "react-bootstrap";
 import { useNavigate, Link } from "react-router-dom";
-import { mockUsers } from "../mockUsers";
 
 export default function LoginForm() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
-
-  // Cargar mockUsers si no existen en Local Storage
-  useEffect(() => {
-    const storedUsers = JSON.parse(localStorage.getItem("users")) || [];
-    if (storedUsers.length === 0) {
-      localStorage.setItem("users", JSON.stringify(mockUsers));
-    }
-  }, []);
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -28,7 +19,7 @@ export default function LoginForm() {
     if (user) {
       localStorage.setItem("currentUser", JSON.stringify(user));
       if (user.role === "admin") navigate("/admin");
-      else navigate("/dashboard");
+      else navigate("/catalog");
     } else {
       setError("Credenciales incorrectas. Inténtalo nuevamente.");
     }

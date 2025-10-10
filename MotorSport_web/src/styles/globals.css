@@ -97,7 +97,7 @@ label { color: var(--text-secondary); font-size: var(--font-size-caption); }
   box-shadow: 0 4px 10px rgba(0,0,0,0.15);
 }
 
-/* Navbar */
+/* Navbar modo claro (por defecto) */
 .navbar {
   background-color: var(--background-main);
   border-bottom: 1px solid var(--border-color);
@@ -113,31 +113,62 @@ label { color: var(--text-secondary); font-size: var(--font-size-caption); }
   text-decoration: underline;
 }
 
+/* Navbar modo oscuro */
+.dark .navbar {
+  background-color: var(--background-main); /* usa el background del modo oscuro */
+  border-bottom: 1px solid var(--border-color);
+}
+.dark .navbar a {
+  color: var(--text-primary); /* texto en modo oscuro */
+}
+.dark .navbar a:hover {
+  color: var(--color-primary);
+}
+
+
 /* Hero */
+/* Hero modo claro (por defecto) */
 .hero {
   position: relative;
-  color: #fff;
+  color: var(--text-primary);
 }
 .hero::before {
   content: "";
   position: absolute;
   inset: 0;
-  background-color: rgba(0,0,0,0.4);
+  background-color: var(--background-main); /* sombra semitransparente */
 }
-.hero h1 { color: #fff; }
+.hero h1 { color: var(--text-primary); }
 
-/* Footer */
+/* Hero modo oscuro */
+.dark .hero {
+  color: var(--text-primary); /* texto claro */
+}
+.dark .hero::before {
+  background-color: var(--background-main); /* sombra más clara sobre fondo oscuro */
+}
+.dark .hero h1 { color: var(--text-primary); }
+
+
+/* Modo claro */
 .footer {
-  background-color: var(--color-secondary);
-  color: var(--text-primary);
+  background-color: var(--background-alt); /* antes era var(--text-primary) */
+  color: var(--text-primary); /* antes era var(--color-secondary) */
   padding: 2rem 1rem;
 }
-.footer a {
-  color: var(--text-primary);
+.footer a { color: var(--text-primary); }
+.footer a:hover { color: var(--color-primary); }
+
+/* Modo oscuro */
+.dark .footer {
+  background-color: var(--background-alt); /* antes era var(--color-secondary) */
+  color: var(--color-secondary); /* antes era var(--text-primary) */
 }
-.footer a:hover {
-  color: var(--color-primary);
-}
+.dark .footer a { color: var(--color-secondary); }
+.dark .footer a:hover { color: var(--color-primary); }
+
+
+
 /* ================================
    Ajustes específicos para modo oscuro
    ================================ */
@@ -186,3 +217,23 @@ label { color: var(--text-secondary); font-size: var(--font-size-caption); }
 :root.dark button.primary:hover {
   background-color: #E6C309;
 }
+
+/* Modifica el navbar para poder comprimir los link en un menu hamburguesa */
+.scroll-navbar {
+  display: flex;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.scroll-navbar .nav-link {
+  flex: 0 0 auto;
+  padding-right: 1rem;
+}
+
+/* Navbar full width en todas las pantallas */
+.navbar-full {
+  width: 100%;
+  left: 0;
+  right: 0;
+}
+
