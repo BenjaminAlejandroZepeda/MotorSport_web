@@ -4,12 +4,15 @@ import RegisterForm from "../components/RegisterForm";
 import Catalog from "../pages/Catalog";
 import AdminPanel from "../pages/AdminPanel";
 import ProtectedRoute from "../components/ProtectedRoute";
+import Home from "../pages/Home"; // ✅ Importa tu componente de página Home
 
 export default function AppRoutes() {
   return (
     <Routes>
-      <Route path="/" element={<LoginForm />} />
+      <Route path="/" element={<Home />} /> {/* ✅ Página por defecto */}
+      <Route path="/login" element={<LoginForm />} />
       <Route path="/register" element={<RegisterForm />} />
+
       <Route
         path="/catalog"
         element={
@@ -18,6 +21,7 @@ export default function AppRoutes() {
           </ProtectedRoute>
         }
       />
+
       <Route
         path="/admin"
         element={
@@ -26,6 +30,8 @@ export default function AppRoutes() {
           </ProtectedRoute>
         }
       />
+
+      {/* Cualquier ruta no definida redirige a Home */}
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   );
