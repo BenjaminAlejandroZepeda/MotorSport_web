@@ -1,10 +1,11 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-import LoginForm from "../components/LoginForm";
-import RegisterForm from "../components/RegisterForm";
+import LoginForm from "../components/Auth/LoginForm";
+import RegisterForm from "../components/Auth/RegisterForm";
 import Catalog from "../pages/Catalog";
 import AdminPanel from "../pages/AdminPanel";
-import ProtectedRoute from "../components/ProtectedRoute";
+import ProtectedRoute from "../components/Auth/ProtectedRoute";
 import Home from "../pages/Home"; 
+import Cart from "../pages/Cart"
 
 export default function AppRoutes() {
   return (
@@ -21,6 +22,16 @@ export default function AppRoutes() {
           </ProtectedRoute>
         }
       />
+
+      <Route
+        path="/cart"
+        element={
+          <ProtectedRoute role="user">
+            <Cart />
+          </ProtectedRoute>
+        }
+      />
+
 
       <Route
         path="/admin"

@@ -11,7 +11,7 @@ export default function ToggleButton() {
   }, []);
 
   const handleToggle = () => {
-    window.toggleDarkMode(); // Función del index.html
+    window.toggleDarkMode(); 
     setDarkMode((prev) => !prev);
   };
 

@@ -1,9 +1,5 @@
 @import url('./variables.css');
 
-/* ================================
-   🌞 Estilos Globales
-   ================================ */
-
 * {
   margin: 0;
   padding: 0;
@@ -142,18 +138,18 @@ label { color: var(--text-secondary); font-size: var(--font-size-caption); }
 
 /* Hero modo oscuro */
 .dark .hero {
-  color: var(--text-primary); /* texto claro */
+  color: var(--text-primary); 
 }
 .dark .hero::before {
-  background-color: var(--background-main); /* sombra más clara sobre fondo oscuro */
+  background-color: var(--background-main); 
 }
 .dark .hero h1 { color: var(--text-primary); }
 
 
 /* Modo claro */
 .footer {
-  background-color: var(--background-alt); /* antes era var(--text-primary) */
-  color: var(--text-primary); /* antes era var(--color-secondary) */
+  background-color: var(--background-alt); 
+  color: var(--text-primary);
   padding: 2rem 1rem;
 }
 .footer a { color: var(--text-primary); }
@@ -161,22 +157,18 @@ label { color: var(--text-secondary); font-size: var(--font-size-caption); }
 
 /* Modo oscuro */
 .dark .footer {
-  background-color: var(--background-alt); /* antes era var(--color-secondary) */
-  color: var(--color-secondary); /* antes era var(--text-primary) */
+  background-color: var(--background-alt);
+  color: var(--color-secondary); 
 }
 .dark .footer a { color: var(--color-secondary); }
 .dark .footer a:hover { color: var(--color-primary); }
 
 
 
-/* ================================
-   Ajustes específicos para modo oscuro
-   ================================ */
-:root.dark {
-  /* Textos generales */
-  color: #F8F9FA;
 
-  /* Formularios y labels */
+:root.dark {
+
+  color: #F8F9FA;
 }
 :root.dark h1, 
 :root.dark h2, 
@@ -187,12 +179,12 @@ label { color: var(--text-secondary); font-size: var(--font-size-caption); }
 :root.dark .form-text, 
 :root.dark .caption, 
 :root.dark .form-link {
-  color: #F8F9FA !important;
+  color: #F8F9FA;
 }
 
-/* Links en modo oscuro */
+
 :root.dark a {
-  color: #4DA3FF !important; /* azul vibrante */
+  color: #4DA3FF; 
 }
 
 /* Inputs y textarea en modo oscuro */
@@ -237,43 +229,43 @@ label { color: var(--text-secondary); font-size: var(--font-size-caption); }
   right: 0;
 }
 
-
-/* ================================
-   ⚙️ MENU TUERCA + TOGGLE
-   ================================ */
-
-.toggle-menu {
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: var(--background-alt);
-  border: 1px solid var(--border-color);
-  border-radius: 50%;
-  padding: 0.5rem;
-  transition: all 0.3s ease;
-}
-
-.toggle-menu:hover {
-  background-color: var(--color-primary);
-  color: var(--color-secondary);
-  transform: rotate(90deg);
-}
-
-.gear-icon {
-  color: var(--text-primary);
-  transition: transform 0.3s ease;
-}
-
-/* 🌑 Modo oscuro */
-:root.dark .toggle-menu {
+/* barra de filtrado */
+.custom-input {
   background-color: var(--background-main);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+.dark .custom-input {
+  background-color: var(--background-alt);
+  color: var(--text-primary);
   border-color: var(--border-color);
 }
 
-:root.dark .gear-icon {
+.form-check-input {
+  background-color: var(--background-main);
+  border-color: var(--border-color);
+}
+.dark .form-check-input {
+  background-color: var(--background-alt);
+  border-color: var(--border-color);
+}
+
+.form-check-label {
+  color: var(--text-primary);
+}
+.dark .form-check-label {
   color: var(--text-primary);
 }
 
+.filter-panel {
+  background-color: var(--background-alt);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  padding: 1rem;
+}
+.dark .filter-panel {
+  background-color: var(--background-alt);
+  border-color: var(--border-color);
+}
 
 
