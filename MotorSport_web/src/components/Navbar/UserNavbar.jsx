@@ -1,6 +1,8 @@
 import { Navbar, Nav, Container } from "react-bootstrap";
 import { NavLink} from "react-router-dom";
 import logo from '../layout/img/MotorSport_Logo.png';
+import NavDropdown from 'react-bootstrap/NavDropdown';
+import ToggleButton from "../ToggleButton"
 
 export default function UserNavbar() {
   
@@ -20,7 +22,6 @@ export default function UserNavbar() {
             className="d-inline-block align-top"
           />
         </Navbar.Brand>
-
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
@@ -33,7 +34,14 @@ export default function UserNavbar() {
             <NavLink className="nav-link" to="/favorites">Favoritos</NavLink>
             <NavLink className="nav-link" to="/support">Soporte</NavLink>
             <NavLink className="nav-link" to="/garage">Garaje</NavLink>
+            
+            <NavDropdown title="⚙️" id="basic-nav-dropdown">
+              <NavDropdown.Item href="#action/3.1">
+                <ToggleButton />
+              </NavDropdown.Item>
+            </NavDropdown>
           </Nav>
+  
         </Navbar.Collapse>
       </Container>
     </Navbar>
