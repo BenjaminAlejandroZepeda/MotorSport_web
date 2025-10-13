@@ -64,7 +64,7 @@ export default function Catalog() {
 
   const handleAddToCart = (vehicle) => {
     console.log("Añadido al carrito:", vehicle);
-    // Aquí puedes integrar Zustand o lógica futura
+
   };
 
   return (

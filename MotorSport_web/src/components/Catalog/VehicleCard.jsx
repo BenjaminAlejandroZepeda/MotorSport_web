@@ -1,8 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
-import onFavoriteChange from "../"
 
-
-export function VehicleCard({ vehicle, onViewDetails }) {
+export function VehicleCard({ vehicle, onViewDetails, onFavoriteChange }) {
   const [isFavorite, setIsFavorite] = useState(false);
 
   const currentUser = localStorage.getItem("currentUser") || "anonimo";
@@ -22,36 +20,34 @@ export function VehicleCard({ vehicle, onViewDetails }) {
     setIsFavorite(checkFavorite());
   }, [checkFavorite]);
 
-const toggleFavorite = () => {
-  try {
-    const favoritosData = JSON.parse(localStorage.getItem("favoritos") || "{}");
-    const favoritosDelUsuario = favoritosData[currentUser] || [];
+  const toggleFavorite = () => {
+    try {
+      const favoritosData = JSON.parse(localStorage.getItem("favoritos") || "{}");
+      const favoritosDelUsuario = favoritosData[currentUser] || [];
 
-    let nuevosFavoritos;
-    if (isFavorite) {
-      
-      nuevosFavoritos = favoritosDelUsuario.filter((fav) => fav.id !== vehicle.id);
-    } else {
-     
-      const yaExiste = favoritosDelUsuario.some((fav) => fav.id === vehicle.id);
-      nuevosFavoritos = yaExiste
-        ? favoritosDelUsuario
-        : [...favoritosDelUsuario, vehicle];
-    }
+      let nuevosFavoritos;
+      if (isFavorite) {
+        nuevosFavoritos = favoritosDelUsuario.filter((fav) => fav.id !== vehicle.id);
+      } else {
+        const yaExiste = favoritosDelUsuario.some((fav) => fav.id === vehicle.id);
+        nuevosFavoritos = yaExiste
+          ? favoritosDelUsuario
+          : [...favoritosDelUsuario, vehicle];
+      }
 
-    const actualizados = { ...favoritosData, [currentUser]: nuevosFavoritos };
-    localStorage.setItem("favoritos", JSON.stringify(actualizados));
+      const actualizados = { ...favoritosData, [currentUser]: nuevosFavoritos };
+      localStorage.setItem("favoritos", JSON.stringify(actualizados));
 
-    setIsFavorite(!isFavorite);
+      setIsFavorite(!isFavorite);
 
   
-    if (onFavoriteChange) {
-      onFavoriteChange();
+      if (onFavoriteChange) {
+        onFavoriteChange();
+      }
+    } catch {
+      console.error("Error al actualizar favoritos");
     }
-  } catch {
-    console.error("Error al actualizar favoritos");
-  }
-};
+  };
 
   return (
     <div className="card" style={{ overflow: "hidden", marginBottom: "1.5rem" }}>
@@ -102,8 +98,6 @@ const toggleFavorite = () => {
           >
             ★
           </button>
-
-
         </div>
       </div>
     </div>
