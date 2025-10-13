@@ -63,27 +63,6 @@
         "braking": 40,
         "handling": 100
         },
-        "banshee 900r": {
-        "images": {
-            "frontQuarter": "https://vignette.wikia.nocookie.net/gtawiki/images/7/70/Banshee900R-GTAO-FrontQuarter.jpg/revision/latest/scale-to-width-down/210",
-            "rearQuarter": "https://vignette.wikia.nocookie.net/gtawiki/images/b/bd/Banshee900R-GTAO-RearQuarter.jpg/revision/latest/scale-to-width-down/210",
-            "front": "https://vignette.wikia.nocookie.net/gtawiki/images/1/11/Banshee900R-GTAO-Front.jpg/revision/latest/scale-to-width-down/210",
-            "rear": "https://vignette.wikia.nocookie.net/gtawiki/images/7/71/Banshee900R-GTAO-Rear.jpg/revision/latest/scale-to-width-down/210",
-            "side": "https://vignette.wikia.nocookie.net/gtawiki/images/3/3f/Banshee900R-GTAO-Side.jpg/revision/latest/scale-to-width-down/210"
-        },
-        "manufacturer": "bravado",
-        "model": "banshee2",
-        "seats": 2,
-        "price": 565000,
-        "topSpeed": {
-            "mph": 131,
-            "kmh": 210
-        },
-        "speed": 80.48,
-        "acceleration": 86.88,
-        "braking": 33.33,
-        "handling": 75.76
-        },
         "bullet": {
         "images": {
             "frontQuarter": "https://vignette.wikia.nocookie.net/gtawiki/images/a/a4/Bullet-GTAV-FrontQuarter.jpg/revision/latest/scale-to-width-down/210",
