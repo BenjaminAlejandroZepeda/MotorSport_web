@@ -8,6 +8,9 @@ import Home from "../pages/Home";
 import Cart from "../pages/Cart"
 import Map from "../pages/Map"
 import SupportContact from "../pages/SupportContact";
+import Garage from "../pages/Garage";
+import Reviews from "../pages/Reviews";
+import Favoritos from "../pages/Favorites";
 
 export default function AppRoutes() {
   return (
@@ -48,6 +51,33 @@ export default function AppRoutes() {
         element={
           <ProtectedRoute role="user">
             <SupportContact />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/garage"
+        element={
+          <ProtectedRoute role="user">
+            <Garage />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/reviews"
+        element={
+          <ProtectedRoute role="user">
+            <Reviews />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/favorites"
+        element={
+          <ProtectedRoute role="user">
+            <Favoritos />
           </ProtectedRoute>
         }
       />

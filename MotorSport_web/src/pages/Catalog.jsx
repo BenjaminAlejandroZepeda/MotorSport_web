@@ -17,6 +17,7 @@ export default function Catalog() {
   useEffect(() => {
     const supers = vehiclesData.super;
     const entries = Object.entries(supers).map(([name, info]) => ({
+      id: name,
       name,
       images: info.images,
       price: info.price,
