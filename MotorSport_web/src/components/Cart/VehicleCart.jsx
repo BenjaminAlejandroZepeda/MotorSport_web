@@ -1,7 +1,7 @@
 import { Card, Button } from "react-bootstrap";
 
 export function VehicleCard({ vehicle, onViewDetails }) {
-  if (!vehicle) return null; // Evita errores si no llega el prop
+  if (!vehicle) return null; 
 
   return (
     <Card className="mb-4 shadow-sm">

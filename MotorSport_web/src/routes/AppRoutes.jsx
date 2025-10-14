@@ -11,6 +11,8 @@ import SupportContact from "../pages/SupportContact";
 import Garage from "../pages/Garage";
 import Reviews from "../pages/Reviews";
 import Favoritos from "../pages/Favorites";
+import AboutPage from "../pages/About";
+import Order from "../pages/Order"
 
 export default function AppRoutes() {
   return (
@@ -54,7 +56,23 @@ export default function AppRoutes() {
           </ProtectedRoute>
         }
       />
+      <Route
+        path="/about"
+        element={
+          <ProtectedRoute role="user">
+            <AboutPage />
+          </ProtectedRoute>
+        }
+      />
 
+      <Route
+        path="/order"
+        element={
+          <ProtectedRoute role="user">
+            <Order />
+          </ProtectedRoute>
+        }
+      />
        <Route
         path="/garage"
         element={

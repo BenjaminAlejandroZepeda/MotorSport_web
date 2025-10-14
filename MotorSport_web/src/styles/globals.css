@@ -121,7 +121,11 @@ label { color: var(--text-secondary); font-size: var(--font-size-caption); }
   color: var(--color-primary);
 }
 
-
+.page-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
 
 .hero {
   position: relative;
@@ -135,7 +139,7 @@ label { color: var(--text-secondary); font-size: var(--font-size-caption); }
 }
 .hero h1 { color: var(--text-primary); }
 
-/* Hero modo oscuro */
+
 .dark .hero {
   color: var(--text-primary); 
 }
@@ -145,7 +149,7 @@ label { color: var(--text-secondary); font-size: var(--font-size-caption); }
 .dark .hero h1 { color: var(--text-primary); }
 
 
-/* Modo claro */
+
 .footer {
   background-color: var(--background-alt); 
   color: var(--text-primary);
@@ -154,7 +158,7 @@ label { color: var(--text-secondary); font-size: var(--font-size-caption); }
 .footer a { color: var(--text-primary); }
 .footer a:hover { color: var(--color-primary); }
 
-/* Modo oscuro */
+
 .dark .footer {
   background-color: var(--background-alt);
   color: var(--color-secondary); 
@@ -184,7 +188,7 @@ label { color: var(--text-secondary); font-size: var(--font-size-caption); }
   color: #4DA3FF; 
 }
 
-/* Inputs y textarea en modo oscuro */
+
 :root.dark input,
 :root.dark select,
 :root.dark textarea {
@@ -193,12 +197,12 @@ label { color: var(--text-secondary); font-size: var(--font-size-caption); }
   border-color: #2B2B2E;
 }
 
-/* Placeholders en modo oscuro */
+
 :root.dark ::placeholder {
   color: #CED4DA;
 }
 
-/* Botones */
+
 :root.dark button.primary {
   background-color: #FFD60A;
   color: #14213D;
@@ -226,7 +230,6 @@ label { color: var(--text-secondary); font-size: var(--font-size-caption); }
   right: 0;
 }
 
-/* barra de filtrado */
 .custom-input {
   background-color: var(--background-main);
   color: var(--text-primary);
@@ -341,3 +344,52 @@ label { color: var(--text-secondary); font-size: var(--font-size-caption); }
 .full-width {
   width: 100%;
 }
+
+.news-card {
+  width: 300px;
+  height: 400px;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--background-alt);
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  overflow: hidden;
+}
+
+.news-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.news-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 1rem;
+}
+
+.news-title {
+  font-size: var(--font-size-h3);
+  font-weight: 600;
+}
+
+.news-body {
+  font-size: var(--font-size-body);
+  color: var(--text-secondary);
+}
+
+.news-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2rem;
+  margin: 0 auto;
+}
+.news-section h1 {
+  color: #000; 
+  transition: color 0.3s ease;
+}
+
+

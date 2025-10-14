@@ -34,7 +34,7 @@ export default function UserNavbar() {
           <Nav className="me-auto">
             <NavLink className="nav-link" to="/catalog">Catálogo</NavLink>
             <NavLink className="nav-link" to="/cart">Carrito</NavLink>
-            <NavLink className="nav-link" to="/orders">Pedidos</NavLink>
+            <NavLink className="nav-link" to="/order">Pedidos</NavLink>
             <NavLink className="nav-link" to="/reviews">Reseñas</NavLink>
             <NavLink className="nav-link" to="/map">Mapa</NavLink>
             <NavLink className="nav-link" to="/favorites">Favoritos</NavLink>
