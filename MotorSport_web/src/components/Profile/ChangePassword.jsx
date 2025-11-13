@@ -41,7 +41,6 @@ export default function ChangePassword() {
   }
 };
 
-
   return (
     <Container className="py-5 d-flex justify-content-center align-items-center" style={{ minHeight: "80vh" }}>
       <Card className="card p-4" style={{ maxWidth: "500px", width: "100%" }}>
