@@ -13,6 +13,9 @@ import Reviews from "../pages/Reviews";
 import Favoritos from "../pages/Favorites";
 import AboutPage from "../pages/About";
 import Order from "../pages/Order"
+import Profile from "../pages/Profile";
+import ChangePassword from "../components//Profile/ChangePassword";
+import ChangeEmail from "../components//Profile/ChangeEmail";
 
 export default function AppRoutes() {
   return (
@@ -100,6 +103,31 @@ export default function AppRoutes() {
         }
       />
 
+      <Route
+        path="/profile"
+        element={
+          <ProtectedRoute role="user">
+            <Profile />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/change-password"
+        element={
+          <ProtectedRoute role="user">
+            <ChangePassword />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/change-email"
+        element={
+          <ProtectedRoute role="user">
+            <ChangeEmail />
+          </ProtectedRoute>
+        }
+      />
 
       <Route
         path="/admin"
@@ -110,7 +138,7 @@ export default function AppRoutes() {
         }
       />
 
-      {/* Cualquier ruta no definida redirige a Home */}
+     
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   );

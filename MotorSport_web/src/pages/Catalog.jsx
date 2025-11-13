@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { Button, Container, Row, Col } from "react-bootstrap";
 import MainLayout from "../components/layout/MainLayout";
 import { VehicleFilters } from "../components/Catalog/VehicleFilters";
-import { VehicleModal } from "../components/Catalog/VehicleModal";
 import { VehicleCard } from "../components/Catalog/VehicleCard";
+import { VehicleDetail } from "../components/Catalog/VehicleDetail";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
@@ -12,40 +12,54 @@ import axios from "axios";
 export default function Catalog() {
   const [vehicles, setVehicles] = useState([]);
   const [filteredVehicles, setFilteredVehicles] = useState([]);
-  const [selectedVehicle, setSelectedVehicle] = useState(null);
-  const [showModal, setShowModal] = useState(false);
+  const [selectedVehicleId, setSelectedVehicleId] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [isMobile, setIsMobile] = useState(false);
+  const [favorites, setFavorites] = useState([]);
 
   const itemsPerPage = 12;
   const totalPages = Math.ceil(filteredVehicles.length / itemsPerPage);
 
+
+  const currentUser = { id: 1, username: "benja", password: "1234" };
+
+  const authConfig = { auth: { username: currentUser.username, password: currentUser.password } };
+
+
   useEffect(() => {
     const fetchVehicles = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/api/vehicles");
-        console.log(" Datos recibidos del backend:", response.data);
-
-        
-        const normalizedVehicles = response.data.map((v) => ({
+        const res = await axios.get("http://localhost:8080/api/vehicles");
+        const normalizedVehicles = res.data.map((v) => ({
           ...v,
-          name: v.model || v.id,  
-          images: v.images || {},  
-          topSpeed: v.topSpeed || {}, 
+          name: v.model || v.id,
+          images: v.images || {},
+          topSpeed: v.topSpeed || {},
         }));
-
-        console.log("🚀 Datos normalizados:", normalizedVehicles);
-
         setVehicles(normalizedVehicles);
         setFilteredVehicles(normalizedVehicles);
       } catch (err) {
         console.error("Error al cargar vehículos:", err);
       }
     };
-
     fetchVehicles();
   }, []);
 
+
+  useEffect(() => {
+    const fetchFavorites = async () => {
+      try {
+        const res = await axios.get(`http://localhost:8080/api/favorites/usuario/${currentUser.id}`, authConfig);
+        const favIds = res.data.map(f => f.vehicle.id);
+        setFavorites(favIds);
+      } catch (err) {
+        console.error("Error al cargar favoritos:", err);
+      }
+    };
+    fetchFavorites();
+  }, []);
+
+  
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 768);
     handleResize();
@@ -55,30 +69,39 @@ export default function Catalog() {
 
   const handleFilter = (filters) => {
     const result = vehicles.filter((v) => {
-      const matchesPrice =
-        v.price >= filters.minPrice && v.price <= filters.maxPrice;
+      const matchesPrice = v.price >= filters.minPrice && v.price <= filters.maxPrice;
       const matchesManufacturer =
-        filters.manufacturers.length === 0 ||
-        filters.manufacturers.includes(v.manufacturer);
-      const matchesPassengers =
-        filters.passengers === null || v.seats === filters.passengers;
-      const matchesSearch =
-        v.name.toLowerCase().includes(filters.searchTerm.toLowerCase());
-
+        filters.manufacturers.length === 0 || filters.manufacturers.includes(v.manufacturer);
+      const matchesPassengers = filters.passengers === null || v.seats === filters.passengers;
+      const matchesSearch = v.name.toLowerCase().includes(filters.searchTerm.toLowerCase());
       return matchesPrice && matchesManufacturer && matchesPassengers && matchesSearch;
     });
-
     setFilteredVehicles(result);
     setCurrentPage(1);
   };
 
-  const handleShowModal = (vehicle) => {
-    setSelectedVehicle(vehicle);
-    setShowModal(true);
-  };
+  const handleShowDetail = (id) => setSelectedVehicleId(id);
 
-  const handleAddToCart = (vehicle) => {
-    console.log("Añadido al carrito:", vehicle);
+  const toggleFavorite = async (vehicle) => {
+    const isFav = favorites.includes(vehicle.id);
+    try {
+      if (isFav) {
+        await axios.delete(
+          `http://localhost:8080/api/favorites/usuario/${currentUser.id}/vehiculo/${vehicle.id}`,
+          authConfig
+        );
+        setFavorites(favs => favs.filter(id => id !== vehicle.id));
+      } else {
+        await axios.post(
+          "http://localhost:8080/api/favorites",
+          { user: { id: currentUser.id }, vehicle: { id: vehicle.id } },
+          authConfig
+        );
+        setFavorites(favs => [...favs, vehicle.id]);
+      }
+    } catch (err) {
+      console.error("No se pudo actualizar el favorito. Revisa tus credenciales.", err);
+    }
   };
 
   const paginatedVehicles = filteredVehicles.slice(
@@ -120,7 +143,9 @@ export default function Catalog() {
                     <div key={vehicle.id} className="carousel-card">
                       <VehicleCard
                         vehicle={vehicle}
-                        onViewDetails={() => handleShowModal(vehicle)}
+                        onViewDetails={() => handleShowDetail(vehicle.id)}
+                        onFavoriteChange={() => toggleFavorite(vehicle)}
+                        isFavorite={favorites.includes(vehicle.id)}
                       />
                     </div>
                   ))}
@@ -130,7 +155,9 @@ export default function Catalog() {
                     <div key={vehicle.id} className="carousel-card">
                       <VehicleCard
                         vehicle={vehicle}
-                        onViewDetails={() => handleShowModal(vehicle)}
+                        onViewDetails={() => handleShowDetail(vehicle.id)}
+                        onFavoriteChange={() => toggleFavorite(vehicle)}
+                        isFavorite={favorites.includes(vehicle.id)}
                       />
                     </div>
                   ))}
@@ -142,7 +169,9 @@ export default function Catalog() {
                   <Col key={vehicle.id} xs={12} md={6} lg={4}>
                     <VehicleCard
                       vehicle={vehicle}
-                      onViewDetails={() => handleShowModal(vehicle)}
+                      onViewDetails={() => handleShowDetail(vehicle.id)}
+                      onFavoriteChange={() => toggleFavorite(vehicle)}
+                      isFavorite={favorites.includes(vehicle.id)}
                     />
                   </Col>
                 ))}
@@ -163,12 +192,12 @@ export default function Catalog() {
           </Col>
         </Row>
 
-        <VehicleModal
-          show={showModal}
-          onHide={() => setShowModal(false)}
-          vehicle={selectedVehicle}
-          onAddToCart={handleAddToCart}
-        />
+        {selectedVehicleId && (
+          <VehicleDetail
+            vehicleId={selectedVehicleId}
+            onClose={() => setSelectedVehicleId(null)}
+          />
+        )}
       </section>
     </MainLayout>
   );

@@ -63,15 +63,15 @@ export default function Home() {
       link="https://www.youtube.com/c/Hern%C3%A1nSaavedra"
     />
     <NewsCard
-      title="GTA 6 podría no llegar a tiempo"
+      title="Continúa la polémica"
       imageUrl="https://media.vandalimg.com/common/140x79/20231259454.jpg"
-      body="Temen que Rockstar retrase el lanzamiento otra vez y no saldría en mayo de egar a tiempo."
+      body="Tras los despidos en el equipo de GTA 6, Rockstar se enfrenta a una reclamación legal"
       link="https://www.youtube.com/c/Hern%C3%A1nSaavedra"
     />
         <NewsCard
-      title="GTA 6 podría no llegar a tiempo"
-      imageUrl="https://media.vandalimg.com/common/140x79/20231259454.jpg"
-      body="Temen que Rockstar retrase el lanzamiento otra vez y no saldría en mayo de egar a tiempo."
+      title="Seis veces más potente que Steam Deck"
+      imageUrl="https://media.vandal.net/i/150x100/11-2025/12/2025111220301328_1.jpg"
+      body="Valve confirma las especificaciones técnicas de su nueva Steam Machine"
       link="https://www.youtube.com/c/Hern%C3%A1nSaavedra"
     />
     
@@ -104,19 +104,51 @@ export default function Home() {
       link="https://www.youtube.com/c/Hern%C3%A1nSaavedra"
     />
         <NewsCard
-      title="GTA 6 podría no llegar a tiempo"
-      imageUrl="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS8Vcz44LZMfcjJBTigJd6NrBOCAgdzA1jmsQ&s"
-      body="Temen que Rockstar retrase el lanzamiento otra vez y no saldría en mayo de egar a tiempo."
+      title="Steam está regalando 2 videojuegos para PC"
+      imageUrl="https://media.vandal.net/i/135x90/11-2025/11/202511118255072_1.jpg"
+      body="te los quedas gratis para siempre si los reclamas a tiempo"
       link="https://www.youtube.com/c/Hern%C3%A1nSaavedra"
     />
   </div>
 </section>
-      <footer className="footer mt-auto">
-      <Container className="d-flex justify-content-between align-items-center flex-wrap">
-        <span>© 2025 Legendary MotorSport</span>
-      </Container>
+<footer className="footer bg-dark text-light mt-auto py-5">
+  <Container>
+    <div className="row text-center text-md-start">
+      
+      <div className="col-md-4 mb-4 mb-md-0">
+        <h5 className="text-warning mb-3">Legendary MotorSport</h5>
+        <p className="small">
+          Legendary MotorSport es una empresa con una vasta experiencia en autos de lujo. <br />
+          Contamos con las mejores marcas del mercado.<br />
+          Somos la casa de los nuevos vehículos de lujo.
+        </p>
+      </div>
+      
+      <div className="col-md-4 mb-4 mb-md-0">
+        <h5 className="text-warning mb-3">Contacto</h5>
+        <p className="small mb-1">📍 Avenida Padre Hurtado Norte 1541, Vitacura, Santiago, Chile</p>
+        <p className="small mb-1">📞 +56 2 3297 9829</p>
+        <p className="small mb-1">📱 +56 9 7476 7968</p>
+        <p className="small mb-1">📱 +56 9 9820 2319</p>
+        <p className="small mb-0">✉️ LegendaryMS@Sport.com</p>
+      </div>
 
-      </footer>
+      
+      <div className="col-md-4">
+        <h5 className="text-warning mb-3">Síguenos</h5>
+        <div className="d-flex justify-content-center justify-content-md-start gap-3">
+          <a href="https://www.youtube.com/c/Hern%C3%A1nSaavedra" className="text-light fs-4">Youtube<i className="bi bi-youtube"></i></a>
+        </div>
+      </div>
+    </div>
+
+    <hr className="border-secondary my-4" />
+    <div className="text-center small">
+      <span>© 2025 Legendary MotorSport — Todos los derechos reservados.</span>
+    </div>
+  </Container>
+</footer>
+
     </div>
   );
 }

@@ -1,52 +1,16 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 
-export function VehicleCard({ vehicle, onViewDetails, onFavoriteChange }) {
-  const [isFavorite, setIsFavorite] = useState(false);
+export function VehicleCard({ vehicle, onViewDetails, onFavoriteChange, isFavorite }) {
+  const [favorite, setFavorite] = useState(isFavorite);
 
-  const currentUser = localStorage.getItem("currentUser") || "anonimo";
-
-  const checkFavorite = useCallback(() => {
-    try {
-      const favoritosData = JSON.parse(localStorage.getItem("favoritos") || "{}");
-      const favoritosDelUsuario = favoritosData[currentUser] || [];
-      return favoritosDelUsuario.some((fav) => fav.id === vehicle.id);
-    } catch {
-      console.error("Error leyendo favoritos del localStorage");
-      return false;
-    }
-  }, [vehicle.id, currentUser]);
 
   useEffect(() => {
-    setIsFavorite(checkFavorite());
-  }, [checkFavorite]);
+    setFavorite(isFavorite);
+  }, [isFavorite]);
 
   const toggleFavorite = () => {
-    try {
-      const favoritosData = JSON.parse(localStorage.getItem("favoritos") || "{}");
-      const favoritosDelUsuario = favoritosData[currentUser] || [];
-
-      let nuevosFavoritos;
-      if (isFavorite) {
-        nuevosFavoritos = favoritosDelUsuario.filter((fav) => fav.id !== vehicle.id);
-      } else {
-        const yaExiste = favoritosDelUsuario.some((fav) => fav.id === vehicle.id);
-        nuevosFavoritos = yaExiste
-          ? favoritosDelUsuario
-          : [...favoritosDelUsuario, vehicle];
-      }
-
-      const actualizados = { ...favoritosData, [currentUser]: nuevosFavoritos };
-      localStorage.setItem("favoritos", JSON.stringify(actualizados));
-
-      setIsFavorite(!isFavorite);
-
-  
-      if (onFavoriteChange) {
-        onFavoriteChange();
-      }
-    } catch {
-      console.error("Error al actualizar favoritos");
-    }
+    setFavorite(prev => !prev); 
+    onFavoriteChange();          
   };
 
   return (
@@ -84,13 +48,13 @@ export function VehicleCard({ vehicle, onViewDetails, onFavoriteChange }) {
 
           <button
             onClick={toggleFavorite}
-            title={isFavorite ? "Quitar de favoritos" : "Agregar a favoritos"}
+            title={favorite ? "Quitar de favoritos" : "Agregar a favoritos"}
             style={{
               background: "none",
               border: "none",
               cursor: "pointer",
               fontSize: "1.8rem",
-              color: isFavorite ? "#FFD60A" : "#bbb",
+              color: favorite ? "#FFD60A" : "#bbb",
               transition: "color 0.3s ease, transform 0.2s ease",
             }}
             onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.2)")}

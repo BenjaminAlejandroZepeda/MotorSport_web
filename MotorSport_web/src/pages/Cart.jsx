@@ -1,75 +1,149 @@
-import { Container, Row, Col, Card, Button } from "react-bootstrap";
+import { useState } from "react";
+import axios from "axios";
+import { Container, Row, Col, Card, Button, Form } from "react-bootstrap";
 import { useCartStore } from "../store/cartStore";
 import VehicleStats from "../components/Cart/VehicleStats";
 import MainLayout from "../components/layout/MainLayout";
+import Factura from "../components/layout/Factura";
 
 export default function Cart() {
   const { cart, clearCart } = useCartStore();
+  const [factura, setFactura] = useState(null);
+  const [metodoPago, setMetodoPago] = useState("Tarjeta de Crédito");
+  const [tipoDocumento, setTipoDocumento] = useState("Factura Electrónica");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
   const total = cart.reduce((sum, v) => sum + v.price * v.quantity, 0);
 
-  const handleCheckout = () => {
+  const handleCheckout = async () => {
     if (cart.length === 0) return;
 
-    const currentUser = localStorage.getItem("currentUser") || "anonimo";
+    setLoading(true);
+    setError(null);
 
-    const nuevaCompra = {
-      id: Date.now(),
-      fechaCompra: new Date().toISOString(),
-      fechaEntrega: new Date(new Date().setMonth(new Date().getMonth() + 1)).toISOString(),
-      estado: "Por entregar",
-      total,
-      vehiculos: cart.map((v) => ({
-        id: v.id,
-        nombre: v.name,
-        modelo: v.model,
-        fabricante: v.manufacturer,
-        cantidad: v.quantity,
-        precio: v.price,
-        precioTotal: v.price * v.quantity,
-      })),
-    };
+    try {
+      
+      const authConfig = {
+        auth: {
+          username: "benja",
+          password: "1234",
+        },
+      };
 
- 
-    const comprasData = JSON.parse(localStorage.getItem("compras") || "{}");
-    const comprasActualizadas = {
-      ...comprasData,
-      [currentUser]: [...(comprasData[currentUser] || []), nuevaCompra],
-    };
-    localStorage.setItem("compras", JSON.stringify(comprasActualizadas));
+      
+      const orderPayload = {
+        userId: 1, 
+        fechaPedido: new Date().toISOString(),
+        estado: "pendiente",
+        direccionEnvio: "Dirección de prueba",
+        items: cart.map((v) => ({
+          vehicle: { id: v.id },
+          cantidad: v.quantity,
+        })),
+      };
+
+      
+      const orderRes = await axios.post(
+        "http://localhost:8080/api/orders",
+        orderPayload,
+        authConfig
+      );
+      const order = orderRes.data;
+
+     
+      const facturaRes = await axios.post(
+        `http://localhost:8080/api/facturas/generar/${order.id}`,
+        null,
+        {
+          ...authConfig,
+          params: { metodoPago, tipoDocumento },
+        }
+      );
+
+      setFactura(facturaRes.data);
 
 
-    const pedidosData = JSON.parse(localStorage.getItem("pedidos") || "{}");
-    const pedidosActualizados = {
-      ...pedidosData,
-      [currentUser]: [...(pedidosData[currentUser] || []), nuevaCompra],
-    };
-    localStorage.setItem("pedidos", JSON.stringify(pedidosActualizados));
-
-    clearCart();
-    alert("✅ Pedido registrado correctamente.");
+      clearCart();
+    } catch (err) {
+      console.error("Error al generar la factura:", err);
+      setError("No se pudo generar la factura. Intenta nuevamente.");
+    } finally {
+      setLoading(false);
+    }
   };
 
+
+  if (factura) {
+    return (
+      <MainLayout>
+        <Container className="py-4">
+          <Factura factura={factura} />
+          <div className="text-center mt-4">
+            <Button variant="secondary" onClick={() => setFactura(null)}>
+              Volver al carrito
+            </Button>
+          </div>
+        </Container>
+      </MainLayout>
+    );
+  }
+
+ 
   return (
     <MainLayout>
       <Container className="py-4">
-        <h2>Carrito de Compras</h2>
+        <h2 className="mb-4 text-center">Carrito de Compras</h2>
+
+        {error && <p className="text-danger text-center mb-3">{error}</p>}
+
         <Row>
           <Col md={8}>
             {cart.length === 0 ? (
-              <p>Tu carrito está vacío.</p>
+              <p className="text-muted">Tu carrito está vacío.</p>
             ) : (
-              cart.map((vehicle) => <VehicleStats key={vehicle.id} vehicle={vehicle} />)
+              cart.map((vehicle) => (
+                <VehicleStats key={vehicle.id} vehicle={vehicle} />
+              ))
             )}
           </Col>
+
           <Col md={4}>
             <Card className="p-3 shadow-sm">
               <h4>Total: ${total.toLocaleString()}</h4>
+
+              <Form.Group className="mt-3">
+                <Form.Label>Método de Pago</Form.Label>
+                <Form.Select
+                  value={metodoPago}
+                  onChange={(e) => setMetodoPago(e.target.value)}
+                >
+                  <option>Tarjeta de Crédito</option>
+                  <option>Tarjeta de Débito</option>
+                  <option>Transferencia Bancaria</option>
+                  <option>PayPal</option>
+                </Form.Select>
+              </Form.Group>
+
+              <Form.Group className="mt-3">
+                <Form.Label>Tipo de Documento</Form.Label>
+                <Form.Select
+                  value={tipoDocumento}
+                  onChange={(e) => setTipoDocumento(e.target.value)}
+                >
+                  <option>Factura Electrónica</option>
+                  <option>Boleta Electrónica</option>
+                  <option>Nota de Venta</option>
+                </Form.Select>
+              </Form.Group>
+
               <Button
                 variant="success"
-                disabled={cart.length === 0}
+                className="mt-3 w-100"
+                disabled={cart.length === 0 || loading}
                 onClick={handleCheckout}
               >
-                Pagar
+                {loading ? "Procesando..." : "Pagar"}
               </Button>
             </Card>
           </Col>

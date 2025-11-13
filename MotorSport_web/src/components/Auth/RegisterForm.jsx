@@ -27,7 +27,7 @@ export default function RegisterForm() {
 
       if (response.status === 200) {
         setMessage("Usuario registrado con éxito. Redirigiendo al login...");
-        setTimeout(() => navigate("/"), 2000);
+        setTimeout(() => navigate("/"), 1000);
       }
     } catch (err) {
       if (err.response) {
