@@ -1,117 +1,141 @@
-import { Container, Row, Col } from "react-bootstrap";
-import MainLayout from "../components/layout/MainLayout";
 import { useEffect, useState } from "react";
-import { GarageCard } from "../components/Garage/GarageCard";
-import { GarageModal } from "../components/Garage/GarageModal";
+import { Container, Row, Col, Navbar, Nav, NavDropdown } from "react-bootstrap";
+import MainLayout from "../components/layout/MainLayout";
 import { VehicleFilters } from "../components/Catalog/VehicleFilters";
-import vehiclesData from "../vehicles.json";
+import { GarageCard } from "../components/Garage/GarageCard"; 
+import { GarageModal } from "../components/Garage/GarageModal";
+import axios from "axios";
 
-
-export default function Garaje() {
+export default function Garage() {
   const [vehicles, setVehicles] = useState([]);
   const [filteredVehicles, setFilteredVehicles] = useState([]);
-  const [selectedVehicle, setSelectedVehicle] = useState(null);
-  const [showModal, setShowModal] = useState(false);
-
+  const [selectedVehicle, setSelectedVehicle] = useState(null); 
+  const [currentPage, setCurrentPage] = useState(1);
+  const [isMobile, setIsMobile] = useState(false);
+  const itemsPerPage = 12;
+  const totalPages = Math.ceil(filteredVehicles.length / itemsPerPage);
+  const storedUser = JSON.parse(localStorage.getItem("currentUser") || "{}");
 
   useEffect(() => {
-  const currentUser = localStorage.getItem("currentUser") || "anonimo";
-  const comprasData = JSON.parse(localStorage.getItem("compras") || "{}");
-  const comprasDelUsuario = comprasData[currentUser] || [];
+    const fetchGarage = async () => {
+      if (!storedUser.id) return;
+      try {
+        const authConfig = {
+          auth: {
+            username: storedUser.email, 
+            password: storedUser.password,
+          },
+        };
 
-  const catalogo = vehiclesData.super;
+        const res = await axios.get(
+          `http://localhost:8080/api/garage/usuario/${storedUser.id}`,
+          authConfig
+        );
 
-  const todosLosVehiculos = comprasDelUsuario.flatMap((compra, compraIndex) =>
-  compra.vehiculos.map((v, vehiculoIndex) => {
-    const datosCatalogo = Object.entries(catalogo).find(
-      ([key]) => key.toLowerCase() === v.nombre.toLowerCase()
-    )?.[1] || {};
+        const autos = res.data.map(item => ({
+          ...item.vehicle,
+          fechaCompra: item.fechaCompra,
+        }));
 
-    return {
-      ...v,
-      id: `${v.id}-${compraIndex}-${vehiculoIndex}`,
-      name: v.nombre,
-      model: v.modelo,
-      manufacturer: v.fabricante ?? datosCatalogo.manufacturer ?? "Desconocido",
-      price: v.precio ?? datosCatalogo.price ?? 0,
-      seats: datosCatalogo.seats ?? "?",
-      topSpeed: datosCatalogo.topSpeed ?? { kmh: "?", mph: "?" },
-      acceleration: datosCatalogo.acceleration ?? "?",
-      braking: datosCatalogo.braking ?? "?",
-      handling: datosCatalogo.handling ?? "?",
-      images: datosCatalogo.images || {
-        frontQuarter: "/placeholder.png",
-        front: "/placeholder.png",
-        rear: "/placeholder.png",
-        side: "/placeholder.png",
-      },
+        setVehicles(autos);
+        setFilteredVehicles(autos);
+      } catch (err) {
+        console.error("Error al cargar el garaje:", err);
+      }
     };
-  })
-);
+    fetchGarage();
+  }, [storedUser]);
 
-
-  setVehicles(todosLosVehiculos);
-  setFilteredVehicles(todosLosVehiculos);
-}, []);
-
-
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const handleFilter = (filters) => {
     const result = vehicles.filter((v) => {
-      const matchesPrice =
-        v.price >= filters.minPrice && v.price <= filters.maxPrice;
+      const matchesPrice = v.price >= filters.minPrice && v.price <= filters.maxPrice;
       const matchesManufacturer =
-        filters.manufacturers.length === 0 ||
-        filters.manufacturers.includes(v.manufacturer);
-      const matchesPassengers =
-        filters.passengers === null || v.seats === filters.passengers;
-      const matchesSearch =
-        v.name.toLowerCase().includes(filters.searchTerm);
-
-      return (
-        matchesPrice &&
-        matchesManufacturer &&
-        matchesPassengers &&
-        matchesSearch
-      );
+        filters.manufacturers.length === 0 || filters.manufacturers.includes(v.manufacturer);
+      const matchesPassengers = filters.passengers === null || v.seats === filters.passengers;
+      const matchesSearch = v.model.toLowerCase().includes(filters.searchTerm.toLowerCase());
+      return matchesPrice && matchesManufacturer && matchesPassengers && matchesSearch;
     });
-
     setFilteredVehicles(result);
+    setCurrentPage(1);
   };
 
-  const handleShowModal = (vehicle) => {
-    setSelectedVehicle(vehicle);
-    setShowModal(true);
-  };
+  const handleViewDetails = (vehicle) => setSelectedVehicle(vehicle);
+
+  const paginatedVehicles = filteredVehicles.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
   return (
     <MainLayout>
-      <h1 className="text-center">Mi Garaje</h1>
+      <section className="catalog-section">
+        <h1 className="text-center mb-4">Mi Garaje</h1>
 
-      <Row>
-        <Col md={3}>
-          <VehicleFilters vehicles={vehicles} onFilter={handleFilter} />
-        </Col>
+        <Row>
+          {isMobile ? (
+            <Navbar className="mobile-navbar mb-3 d-md-none">
+              <Container>
+                <Nav className="w-100">
+                  <NavDropdown title="🔍 Filtros" id="garage-filter-dropdown" className="w-100">
+                    <div className="dropdown-filters scrollable-dropdown px-3 py-2">
+                      <VehicleFilters vehicles={vehicles} onFilter={handleFilter} />
+                    </div>
+                  </NavDropdown>
+                </Nav>
+              </Container>
+            </Navbar>
+          ) : (
+            <Col md={3}>
+              <VehicleFilters vehicles={vehicles} onFilter={handleFilter} />
+            </Col>
+          )}
 
-        <Col md={9}>
-          <Row>
-            {filteredVehicles.map((vehicle, index) => (
-              <Col key={`${vehicle.id}-${index}`} xs={12} md={6} lg={4}>
-                <GarageCard
-                  vehicle={vehicle}
-                  onViewDetails={() => handleShowModal(vehicle)}
-                />
-              </Col>
-            ))}
-          </Row>
-        </Col>
-      </Row>
+          <Col md={isMobile ? 12 : 9}>
+            {paginatedVehicles.length === 0 ? (
+              <p className="text-center">Tu garaje está vacío</p>
+            ) : (
+              <Row className="vehicle-grid">
+                {paginatedVehicles.map((vehicle) => (
+                  <Col key={vehicle.id} xs={12} md={6} lg={4}>
+                    <GarageCard
+                      vehicle={vehicle}
+                      onViewDetails={() => handleViewDetails(vehicle)}
+                    />
+                  </Col>
+                ))}
+              </Row>
+            )}
 
-      <GarageModal
-        show={showModal}
-        onHide={() => setShowModal(false)}
-        vehicle={selectedVehicle}
-      />
+            <div className="pagination-numbers d-flex justify-content-center mt-3 flex-wrap gap-2">
+              {Array.from({ length: totalPages }, (_, index) => (
+                <button
+                  key={index + 1}
+                  className={`page-number ${currentPage === index + 1 ? "active" : ""}`}
+                  onClick={() => setCurrentPage(index + 1)}
+                >
+                  {index + 1}
+                </button>
+              ))}
+            </div>
+          </Col>
+        </Row>
+
+        {selectedVehicle && (
+          <GarageModal
+            show={!!selectedVehicle}
+            vehicle={selectedVehicle}
+            user={storedUser} 
+            onHide={() => setSelectedVehicle(null)}
+          />
+        )}
+      </section>
     </MainLayout>
   );
 }

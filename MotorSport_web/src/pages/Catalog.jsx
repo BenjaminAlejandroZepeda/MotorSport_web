@@ -20,11 +20,13 @@ export default function Catalog() {
   const itemsPerPage = 12;
   const totalPages = Math.ceil(filteredVehicles.length / itemsPerPage);
 
+  
+  const storedUser = JSON.parse(localStorage.getItem("currentUser") || "{}");
+  const token = storedUser.token || "";
 
-  const currentUser = { id: 1, username: "benja", password: "1234" };
-
-  const authConfig = { auth: { username: currentUser.username, password: currentUser.password } };
-
+  const authConfig = token
+    ? { headers: { Authorization: `Bearer ${token}` } }
+    : {};
 
   useEffect(() => {
     const fetchVehicles = async () => {
@@ -45,21 +47,24 @@ export default function Catalog() {
     fetchVehicles();
   }, []);
 
-
   useEffect(() => {
+    if (!storedUser.id || !token) return;
+
     const fetchFavorites = async () => {
       try {
-        const res = await axios.get(`http://localhost:8080/api/favorites/usuario/${currentUser.id}`, authConfig);
-        const favIds = res.data.map(f => f.vehicle.id);
+        const res = await axios.get(
+          `http://localhost:8080/api/favorites/usuario/${storedUser.id}`,
+          authConfig
+        );
+        const favIds = res.data.map((f) => f.vehicle.id);
         setFavorites(favIds);
       } catch (err) {
         console.error("Error al cargar favoritos:", err);
       }
     };
     fetchFavorites();
-  }, []);
+  }, [storedUser.id, token]);
 
-  
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 768);
     handleResize();
@@ -83,21 +88,23 @@ export default function Catalog() {
   const handleShowDetail = (id) => setSelectedVehicleId(id);
 
   const toggleFavorite = async (vehicle) => {
+    if (!storedUser.id || !token) return;
+
     const isFav = favorites.includes(vehicle.id);
     try {
       if (isFav) {
         await axios.delete(
-          `http://localhost:8080/api/favorites/usuario/${currentUser.id}/vehiculo/${vehicle.id}`,
+          `http://localhost:8080/api/favorites/usuario/${storedUser.id}/vehiculo/${vehicle.id}`,
           authConfig
         );
-        setFavorites(favs => favs.filter(id => id !== vehicle.id));
+        setFavorites((favs) => favs.filter((id) => id !== vehicle.id));
       } else {
         await axios.post(
           "http://localhost:8080/api/favorites",
-          { user: { id: currentUser.id }, vehicle: { id: vehicle.id } },
+          { user: { id: storedUser.id }, vehicle: { id: vehicle.id } },
           authConfig
         );
-        setFavorites(favs => [...favs, vehicle.id]);
+        setFavorites((favs) => [...favs, vehicle.id]);
       }
     } catch (err) {
       console.error("No se pudo actualizar el favorito. Revisa tus credenciales.", err);
@@ -193,10 +200,7 @@ export default function Catalog() {
         </Row>
 
         {selectedVehicleId && (
-          <VehicleDetail
-            vehicleId={selectedVehicleId}
-            onClose={() => setSelectedVehicleId(null)}
-          />
+          <VehicleDetail vehicleId={selectedVehicleId} onClose={() => setSelectedVehicleId(null)} />
         )}
       </section>
     </MainLayout>

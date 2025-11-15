@@ -524,3 +524,98 @@ label { color: var(--text-secondary); font-size: var(--font-size-caption); }
   min-width: 280px;
   padding: 1rem;
 }
+
+
+.review-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: 1rem;
+  gap: 0.25rem; 
+  max-width: 320px; 
+  min-height: 260px;
+  border-radius: var(--border-radius);
+  background-color: var(--background-alt);
+  box-shadow: var(--box-shadow);
+  transition: box-shadow 0.3s ease;
+}
+
+.review-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.review-title {
+  font-size: var(--font-size-h3);
+  margin-bottom: 0.25rem;
+  text-transform: capitalize;
+}
+
+.review-user,
+.review-rating,
+.review-comment,
+.review-date {
+  font-size: var(--font-size-body);
+  margin-bottom: 0.25rem; 
+}
+
+.review-date {
+  font-size: var(--font-size-caption);
+  color: var(--text-secondary);
+}
+
+.review-card button {
+  font-size: var(--font-size-body);
+  font-weight: 500;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0.4rem 0.8rem;
+}
+
+.review-card button.primary {
+  background-color: var(--color-primary);
+  color: var(--color-secondary);
+  border: none;
+}
+
+.review-card button.primary:hover {
+  background-color: var(--hover-color);
+}
+
+.review-card button.secondary {
+  background-color: transparent;
+  border: 1px solid var(--color-secondary);
+  color: var(--color-secondary);
+}
+
+.review-card button.secondary:hover {
+  background-color: var(--background-main);
+}
+
+.review-card textarea,
+.review-card select {
+  width: 100%;
+  padding: 0.4rem;
+  font-size: var(--font-size-body);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border-color);
+  margin-bottom: 0.25rem;
+  resize: none;
+}
+
+.star {
+  font-size: 1.2rem;
+  color: #ccc;
+}
+
+.star.filled {
+  color: var(--color-primary);
+}
+
+.reviews-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem; 
+  justify-content: center;
+  padding: 1rem;
+}

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Form, Button, Alert, Container, Card } from "react-bootstrap";
+import { Form, Button, Alert, Container, Card, Spinner } from "react-bootstrap";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 
@@ -9,39 +9,36 @@ export default function RegisterForm() {
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleRegister = async (e) => {
     e.preventDefault();
     setError("");
     setMessage("");
+    setLoading(true);
 
     try {
-      
       const newUser = { username, email, password, role: "user" };
 
-      const response = await axios.post(
-        "http://localhost:8080/api/users/register",
-        newUser
-      );
+      const response = await axios.post("http://localhost:8080/api/users/register", newUser);
 
       if (response.status === 200) {
         setMessage("Usuario registrado con éxito. Redirigiendo al login...");
-        setTimeout(() => navigate("/"), 1000);
+        setTimeout(() => navigate("/"), 1500);
       }
     } catch (err) {
-      if (err.response) {
-        setError(err.response.data || "Error al registrar usuario");
-      } else {
-        setError("Error al conectar con el servidor");
-      }
+      if (err.response) setError(err.response.data || "Error al registrar usuario");
+      else setError("Error al conectar con el servidor");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <Container className="d-flex justify-content-center align-items-center vh-100">
-      <Card className="p-4 shadow" style={{ maxWidth: "400px", width: "100%" }}>
-        <h3 className="text-center mb-4">Registro</h3>
+      <Card className="p-4 shadow-lg rounded-4" style={{ maxWidth: "400px", width: "100%" }}>
+        <h3 className="text-center mb-4 text-warning fw-bold">Registro</h3>
 
         {error && <Alert variant="danger">{error}</Alert>}
         {message && <Alert variant="success">{message}</Alert>}
@@ -80,8 +77,8 @@ export default function RegisterForm() {
             />
           </Form.Group>
 
-          <Button variant="warning" type="submit" className="w-100">
-            Registrarse
+          <Button variant="warning" type="submit" className="w-100 fw-bold" disabled={loading}>
+            {loading ? <><Spinner animation="border" size="sm" className="me-2" /> Registrando...</> : "Registrarse"}
           </Button>
         </Form>
 

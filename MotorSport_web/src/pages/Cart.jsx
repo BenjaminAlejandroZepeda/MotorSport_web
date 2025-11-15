@@ -1,6 +1,6 @@
-import { useState } from "react";
-import axios from "axios";
+import { useState, useEffect } from "react";
 import { Container, Row, Col, Card, Button, Form } from "react-bootstrap";
+import axios from "axios";
 import { useCartStore } from "../store/cartStore";
 import VehicleStats from "../components/Cart/VehicleStats";
 import MainLayout from "../components/layout/MainLayout";
@@ -13,27 +13,43 @@ export default function Cart() {
   const [tipoDocumento, setTipoDocumento] = useState("Factura Electrónica");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [currentUser, setCurrentUser] = useState(null);
 
   const total = cart.reduce((sum, v) => sum + v.price * v.quantity, 0);
 
+  // Obtener usuario de localStorage al cargar el componente
+  useEffect(() => {
+    const storedUser = localStorage.getItem("currentUser");
+    if (storedUser) {
+      setCurrentUser(JSON.parse(storedUser));
+    }
+  }, []);
+
   const handleCheckout = async () => {
-    if (cart.length === 0) return;
+    if (!currentUser?.id || !currentUser?.token) {
+      setError("Debes iniciar sesión para realizar el pago.");
+      return;
+    }
+
+    if (cart.length === 0) {
+      setError("Tu carrito está vacío.");
+      return;
+    }
 
     setLoading(true);
     setError(null);
 
     try {
-      
+      // Configuración de autenticación con token actualizado
       const authConfig = {
-        auth: {
-          username: "benja",
-          password: "1234",
+        headers: {
+          Authorization: `Bearer ${currentUser.token}`,
         },
       };
 
-      
+      // Crear orden
       const orderPayload = {
-        userId: 1, 
+        userId: currentUser.id,
         fechaPedido: new Date().toISOString(),
         estado: "pendiente",
         direccionEnvio: "Dirección de prueba",
@@ -43,7 +59,6 @@ export default function Cart() {
         })),
       };
 
-      
       const orderRes = await axios.post(
         "http://localhost:8080/api/orders",
         orderPayload,
@@ -51,7 +66,7 @@ export default function Cart() {
       );
       const order = orderRes.data;
 
-     
+      // Generar factura
       const facturaRes = await axios.post(
         `http://localhost:8080/api/facturas/generar/${order.id}`,
         null,
@@ -62,17 +77,17 @@ export default function Cart() {
       );
 
       setFactura(facturaRes.data);
-
-
       clearCart();
     } catch (err) {
       console.error("Error al generar la factura:", err);
-      setError("No se pudo generar la factura. Intenta nuevamente.");
+      setError(
+        err.response?.data?.message ||
+          "No se pudo generar la factura. Intenta nuevamente."
+      );
     } finally {
       setLoading(false);
     }
   };
-
 
   if (factura) {
     return (
@@ -89,7 +104,6 @@ export default function Cart() {
     );
   }
 
- 
   return (
     <MainLayout>
       <Container className="py-4">

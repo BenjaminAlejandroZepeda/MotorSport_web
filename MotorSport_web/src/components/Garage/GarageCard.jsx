@@ -1,32 +1,52 @@
+import { Card, Button } from "react-bootstrap";
+
 export function GarageCard({ vehicle, onViewDetails }) {
+  if (!vehicle) return null;
+
+  const name =
+    vehicle.model || vehicle.nombre || vehicle.name || "Vehículo";
+  const manufacturer =
+    vehicle.manufacturer || vehicle.fabricante || "Desconocido";
+  const price = vehicle.price ?? vehicle.precio ?? null;
+  const seats = vehicle.seats ?? vehicle.pasajeros ?? "—";
+
+  const image =
+    vehicle.images?.frontQuarter ||
+    vehicle.images?.front ||
+    vehicle.images?.main ||
+    "/placeholder.png";
+
   return (
-    <div className="card" style={{ overflow: "hidden", marginBottom: "1.5rem" }}>
-      <img
-        src={vehicle.images?.frontQuarter || "/placeholder.png"}
-        alt={vehicle.nombre}
-        style={{
-          width: "100%",
-          height: "200px",
-          objectFit: "cover",
-          borderTopLeftRadius: "var(--border-radius)",
-          borderTopRightRadius: "var(--border-radius)",
-        }}
+    <Card className="mb-4 shadow-sm garage-card">
+      <Card.Img
+        variant="top"
+        src={image}
+        alt={name}
+        className="garage-card-img"
+        style={{ height: "200px", objectFit: "cover" }}
       />
 
-      <div style={{ padding: "1rem" }}>
-        <h3 style={{ textTransform: "capitalize", marginBottom: "0.5rem" }}>
-          {vehicle.nombre}
-        </h3>
-        <p style={{ marginBottom: "1rem" }}>
-          <strong>Fabricante:</strong> {vehicle.fabricante} <br />
-          <strong>Precio:</strong> ${vehicle.precio?.toLocaleString() || "No disponible"} <br />
-          <strong>Pasajeros:</strong> {vehicle.seats}
-        </p>
+      <Card.Body className="garage-card-body">
+        <Card.Title className="text-capitalize garage-card-title">
+          {name}
+        </Card.Title>
 
-        <button className="primary" style={{ padding: "0.5rem 1rem" }} onClick={onViewDetails}>
+        <Card.Text>
+          <strong>Fabricante:</strong> {manufacturer} <br />
+          <strong>Precio:</strong>{" "}
+          {price !== null ? `$${Number(price).toLocaleString()}` : "No disponible"} <br />
+          <strong>Pasajeros:</strong> {seats}
+        </Card.Text>
+
+        <Button
+          variant="warning"
+          className="primary"
+          onClick={() => onViewDetails(vehicle)}
+        >
           Ver detalles
-        </button>
-      </div>
-    </div>
+        </Button>
+
+      </Card.Body>
+    </Card>
   );
 }

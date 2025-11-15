@@ -22,28 +22,31 @@ export default function LoginForm() {
       );
 
       if (response.status === 200) {
-        const user = response.data;
- 
-        const userData = {
-          id: user.id,
-          email,
-          password, 
-          role: user.role,
-        };
+        const { user, token } = response.data;
 
-        localStorage.setItem("currentUser", JSON.stringify(userData));
+        if (!user) throw new Error("El backend no devolvió un usuario.");
+        if (!token) throw new Error("Token no recibido del backend.");
 
-        if (user.role?.toLowerCase() === "admin") {
-          navigate("/AdminPanel");
-        } else {
-          navigate("/Catalog");
-        }
+        localStorage.setItem(
+          "currentUser",
+          JSON.stringify({
+            id: user.id,
+            username: user.username ?? "Usuario",
+            email: user.email,
+            role: user.role ?? "user",
+            token: token,
+          })
+        );
+
+        navigate(user.role?.toLowerCase() === "admin" ? "/AdminPanel" : "/Catalog");
       }
     } catch (err) {
+      console.error(err);
+
       if (err.response) {
         if (err.response.status === 401) setError("Contraseña incorrecta.");
         else if (err.response.status === 404) setError("Usuario no encontrado.");
-        else setError("Error al iniciar sesión. Intenta nuevamente.");
+        else setError("Error al iniciar sesión.");
       } else {
         setError("No se pudo conectar con el servidor.");
       }
@@ -83,15 +86,11 @@ export default function LoginForm() {
             />
           </Form.Group>
 
-          <Button
-            variant="warning"
-            type="submit"
-            className="w-100 fw-bold"
-            disabled={loading}
-          >
+          <Button variant="warning" type="submit" className="w-100 fw-bold" disabled={loading}>
             {loading ? (
               <>
-                <Spinner animation="border" size="sm" className="me-2" /> Ingresando...
+                <Spinner animation="border" size="sm" className="me-2" />
+                Ingresando...
               </>
             ) : (
               "Ingresar"

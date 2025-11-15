@@ -1,55 +1,47 @@
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
-export function GarageModal({ show, onHide, vehicle }) {
+export function GarageModal({ show, onHide, vehicle, user }) {
   const [rating, setRating] = useState(0);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-  if (vehicle?.id) {
-    const currentUser = localStorage.getItem("currentUser") || "anonimo";
-    const reseñasData = JSON.parse(localStorage.getItem("reseñas") || "{}");
-    const savedRating = reseñasData[currentUser]?.[vehicle.id];
-    if (savedRating) setRating(savedRating);
-  }
-}, [vehicle]);
+    if (vehicle?.id && user?.id) {
+      
+      setRating(0); 
+    }
+  }, [vehicle, user]);
 
-  const handleRate = () => {
-  const currentUser = localStorage.getItem("currentUser") || "anonimo";
-  const reseñasData = JSON.parse(localStorage.getItem("reseñas") || "{}");
+  const handleSave = async () => {
+    if (!user?.id || !vehicle?.id) return;
 
-  const yaReseñado = reseñasData[currentUser]?.[vehicle.id];
+    setLoading(true);
+    try {
+      const payload = {
+        vehicleId: vehicle.id,
+        userId: user.id,
+        puntuacion: rating,
+        comentario: "",
+      };
 
-  if (yaReseñado) {
-    alert("Ya has reseñado este vehículo.");
-    return;
-  }
+      await axios.post("http://localhost:8080/api/reviews", payload, {
+        auth: {
+          username: user.email, 
+          password: user.password,
+        },
+      });
 
-  const nuevasReseñas = {
-    ...reseñasData,
-    [currentUser]: {
-      ...(reseñasData[currentUser] || {}),
-      [vehicle.id]: rating
+      
+      setRating(0);
+      onHide();
+    } catch (err) {
+      console.error("Error al guardar la reseña:", err);
+    } finally {
+      setLoading(false);
     }
   };
 
-  localStorage.setItem("reseñas", JSON.stringify(nuevasReseñas));
-  alert(`✅ Reseña guardada: ${rating} estrellas`);
-};
-
-
   if (!show || !vehicle) return null;
-
-  const {
-    name,
-    manufacturer,
-    model,
-    seats,
-    price,
-    topSpeed,
-    acceleration,
-    braking,
-    handling,
-    images,
-  } = vehicle;
 
   return (
     <div
@@ -69,14 +61,12 @@ export function GarageModal({ show, onHide, vehicle }) {
         className="card"
         style={{
           width: "90%",
-          maxWidth: "800px",
+          maxWidth: "500px",
           padding: "1.5rem",
           position: "relative",
-          animation: "fadeIn 0.25s ease",
         }}
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Botón cerrar */}
         <button
           onClick={onHide}
           style={{
@@ -85,7 +75,6 @@ export function GarageModal({ show, onHide, vehicle }) {
             right: "1rem",
             background: "none",
             border: "none",
-            color: "var(--text-primary)",
             fontSize: "1.5rem",
             cursor: "pointer",
           }}
@@ -93,95 +82,11 @@ export function GarageModal({ show, onHide, vehicle }) {
           ✕
         </button>
 
-        {/* Título */}
         <h2 style={{ textTransform: "capitalize", marginBottom: "1rem" }}>
-          {name}
+          {vehicle.model}
         </h2>
 
-        {/* Galería */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))",
-            gap: "0.75rem",
-            marginBottom: "1.5rem",
-          }}
-        >
-          <img
-            src={images.front || "/placeholder.png"}
-            alt={`${name} frente`}
-            style={{ width: "100%", borderRadius: "var(--border-radius)" }}
-          />
-          <img
-            src={images.rear || "/placeholder.png"}
-            alt={`${name} trasera`}
-            style={{ width: "100%", borderRadius: "var(--border-radius)" }}
-          />
-          <img
-            src={images.side || "/placeholder.png"}
-            alt={`${name} lateral`}
-            style={{ width: "100%", borderRadius: "var(--border-radius)" }}
-          />
-        </div>
-
-        {/* Info */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: "1rem",
-            marginBottom: "1.5rem",
-          }}
-        >
-          <div>
-            <p><strong>Fabricante:</strong> {manufacturer}</p>
-            <p><strong>Modelo:</strong> {model}</p>
-            <p><strong>Pasajeros:</strong> {seats}</p>
-            <p><strong>Precio:</strong> ${price?.toLocaleString() || "No disponible"}</p>
-          </div>
-          <div>
-            <p><strong>Velocidad Máxima:</strong> {topSpeed?.kmh} km/h ({topSpeed?.mph} mph)</p>
-            <p><strong>Aceleración:</strong> {acceleration}</p>
-            <p><strong>Frenado:</strong> {braking}</p>
-            <p><strong>Manejo:</strong> {handling}</p>
-          </div>
-        </div>
-
-        {/* Botones */}
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "flex-end",
-            gap: "1rem",
-            marginTop: "1rem",
-          }}
-        >
-          <button
-            className="primary"
-            style={{
-              fontSize: "1.05rem",
-              padding: "0.75rem 1.5rem",
-              borderRadius: "var(--border-radius)",
-            }}
-            onClick={handleRate}
-          >
-            Reseñar vehículo
-          </button>
-          <button
-            className="secondary"
-            style={{
-              fontSize: "1.05rem",
-              padding: "0.75rem 1.5rem",
-              borderRadius: "var(--border-radius)",
-            }}
-            onClick={onHide}
-          >
-            Cerrar
-          </button>
-        </div>
-
-        {/* Estrellas */}
-        <div style={{ marginTop: "1rem", textAlign: "center" }}>
+        <div style={{ display: "flex", gap: "1rem", marginBottom: "1rem" }}>
           {[1, 2, 3, 4, 5].map((star) => (
             <span
               key={star}
@@ -190,13 +95,29 @@ export function GarageModal({ show, onHide, vehicle }) {
                 fontSize: "2rem",
                 cursor: "pointer",
                 color: star <= rating ? "#FFD60A" : "#ccc",
-                marginRight: "0.25rem",
               }}
             >
               ★
             </span>
           ))}
         </div>
+
+        <button
+          className="primary"
+          style={{ width: "100%", padding: "0.75rem", marginBottom: "0.5rem" }}
+          onClick={handleSave}
+          disabled={loading || rating === 0}
+        >
+          {loading ? "Guardando..." : "Guardar Reseña"}
+        </button>
+
+        <button
+          className="secondary"
+          style={{ width: "100%", padding: "0.75rem" }}
+          onClick={onHide}
+        >
+          Cerrar
+        </button>
       </div>
     </div>
   );

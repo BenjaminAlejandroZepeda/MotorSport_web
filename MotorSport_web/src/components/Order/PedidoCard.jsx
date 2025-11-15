@@ -8,15 +8,18 @@ export function PedidoCard({ pedido }) {
   const [factura, setFactura] = useState(null);
   const [loadingFactura, setLoadingFactura] = useState(false);
 
-  const total = pedido.items
-    ? pedido.items.reduce((sum, v) => sum + v.precioTotal, 0)
-    : 0;
+  const total = pedido.items?.reduce((sum, v) => sum + v.precioTotal, 0) || 0;
 
-  const username = "benja";
-  const password = "1234";
-  const basicAuth = "Basic " + btoa(`${username}:${password}`);
+  const storedUser = JSON.parse(localStorage.getItem("currentUser") || "{}");
+  const token = storedUser.token || "";
+  const authConfig = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
 
   const handleVerFactura = async () => {
+    if (!token) {
+      alert("Debes iniciar sesión para ver la factura.");
+      return;
+    }
+
     if (factura) {
       setShowFactura(!showFactura);
       return;
@@ -26,13 +29,13 @@ export function PedidoCard({ pedido }) {
     try {
       const res = await axios.get(
         `http://localhost:8080/api/facturas/orden/${pedido.id}`,
-        { headers: { Authorization: basicAuth } }
+        authConfig
       );
       setFactura(res.data);
       setShowFactura(true);
     } catch (err) {
       console.error("Error al cargar la factura:", err);
-      alert("No se pudo cargar la factura.");
+      alert(err.response?.data?.message || "No se pudo cargar la factura.");
     } finally {
       setLoadingFactura(false);
     }
@@ -43,16 +46,15 @@ export function PedidoCard({ pedido }) {
       <Card.Body>
         <Card.Title>Pedido #{pedido.id}</Card.Title>
         <Card.Text>
-          <strong>Fecha de compra:</strong>{" "}
-          {new Date(pedido.fechaPedido).toLocaleString()} <br />
+          <strong>Fecha de compra:</strong> {new Date(pedido.fechaPedido).toLocaleString()} <br />
           <strong>Estado:</strong> {pedido.estado || "Pendiente"} <br />
           <strong>Total:</strong> ${total.toLocaleString()}
         </Card.Text>
 
         <ul>
-          {pedido.items?.map((v) => (
-            <li key={v.vehicleId}>
-              {v.modelo || v.vehicleId} ({v.cantidad} x ${v.precioUnitario.toLocaleString()})
+          {pedido.items?.map((item) => (
+            <li key={item.id}>
+              {item.vehicle?.model || item.vehicle?.id} ({item.cantidad} x ${item.precioUnitario.toLocaleString()})
             </li>
           ))}
         </ul>
@@ -66,9 +68,7 @@ export function PedidoCard({ pedido }) {
         </Button>
 
         <Collapse in={showFactura}>
-          <div className="mt-3">
-            {factura && <Factura factura={factura} />}
-          </div>
+          <div className="mt-3">{factura && <Factura factura={factura} />}</div>
         </Collapse>
       </Card.Body>
     </Card>
