@@ -2,55 +2,63 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 
 export function useFavoritos() {
-  const [vehicles, setVehicles] = useState([]);
-  const [filteredVehicles, setFilteredVehicles] = useState([]);
+  const [favorites, setFavorites] = useState([]);
+  const storedUser = localStorage.getItem("currentUser");
+  const currentUser = storedUser ? JSON.parse(storedUser) : null;
 
-  
-  const currentUser = { id: 1, username: "benja", password: "1234" };
-
-  const authConfig = { auth: { username: currentUser.username, password: currentUser.password } };
+  const authConfig = currentUser
+    ? { headers: { Authorization: `Bearer ${currentUser.token}` } }
+    : {};
 
   const cargarFavoritos = async () => {
+    if (!currentUser) return;
     try {
-      const response = await axios.get(
+      const res = await axios.get(
         `http://localhost:8080/api/favorites/usuario/${currentUser.id}`,
         authConfig
       );
-      const favoritos = response.data.map(f => f.vehicle);
-      setVehicles(favoritos);
-      setFilteredVehicles(favoritos);
+      const vehiculos = res.data.map(f => f.vehicle);
+      setFavorites(vehiculos);
     } catch (err) {
       console.error("Error cargando favoritos:", err);
     }
   };
 
-  const eliminarFavorito = async (vehicleId) => {
+  const toggleFavorite = async (vehicleId) => {
+    if (!currentUser) return;
+
+    const isFav = favorites.some(v => v.id === vehicleId);
+
     try {
-      await axios.delete(
-        `http://localhost:8080/api/favorites/usuario/${currentUser.id}/vehiculo/${vehicleId}`,
-        authConfig
-      );
+      if (isFav) {
+        // Eliminar favorito
+        await axios.delete(
+          `http://localhost:8080/api/favorites/usuario/${currentUser.id}/vehiculo/${vehicleId}`,
+          authConfig
+        );
+      } else {
+        // Añadir favorito
+        await axios.post(
+          `http://localhost:8080/api/favorites`,
+          {
+            user: { id: currentUser.id },
+            vehicle: { id: vehicleId }
+          },
+          authConfig
+        );
+      }
+      // Refrescar lista
       cargarFavoritos();
     } catch (err) {
-      console.error("Error eliminando favorito:", err);
+      console.error("Error al actualizar favorito:", err);
     }
   };
 
-  const handleFilter = (filters) => {
-    const result = vehicles.filter((v) => {
-      const matchesPrice = v.price >= filters.minPrice && v.price <= filters.maxPrice;
-      const matchesManufacturer =
-        filters.manufacturers.length === 0 || filters.manufacturers.includes(v.manufacturer);
-      const matchesPassengers = filters.passengers === null || v.seats === filters.passengers;
-      const matchesSearch = v.name.toLowerCase().includes(filters.searchTerm.toLowerCase());
-      return matchesPrice && matchesManufacturer && matchesPassengers && matchesSearch;
-    });
-    setFilteredVehicles(result);
-  };
+  const isFavorite = (vehicleId) => favorites.some(v => v.id === vehicleId);
 
   useEffect(() => {
     cargarFavoritos();
   }, []);
 
-  return { vehicles, filteredVehicles, handleFilter, cargarFavoritos, eliminarFavorito };
+  return { favorites, isFavorite, toggleFavorite, cargarFavoritos };
 }

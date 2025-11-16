@@ -5,7 +5,7 @@ import { VehicleFilters } from "../components/Catalog/VehicleFilters";
 import { useFavoritos } from "../components/Favorites/useFavoritos";
 
 export default function Favoritos() {
-  const { vehicles, filteredVehicles, handleFilter, eliminarFavorito } = useFavoritos();
+  const { favorites, isFavorite, toggleFavorite, handleFilter } = useFavoritos();
 
   return (
     <MainLayout>
@@ -13,25 +13,25 @@ export default function Favoritos() {
 
       <Row>
         <Col md={3}>
-          <VehicleFilters vehicles={vehicles} onFilter={handleFilter} />
+          <VehicleFilters vehicles={favorites} onFilter={handleFilter} />
         </Col>
 
         <Col md={9}>
           <Row>
-            {filteredVehicles.length === 0 ? (
+            {favorites.length === 0 ? (
               <Col>
                 <p className="text-center text-muted">
                   No has agregado vehículos a favoritos o no coinciden con los filtros.
                 </p>
               </Col>
             ) : (
-              filteredVehicles.map((vehicle, index) => (
+              favorites.map((vehicle, index) => (
                 <Col key={`${vehicle.id}-${index}`} xs={12} md={6} lg={4} className="mb-4">
                   <VehicleCard
                     vehicle={vehicle}
                     onViewDetails={() => {}}
-                    isFavorite={true} 
-                    onFavoriteChange={() => eliminarFavorito(vehicle.id)} 
+                    isFavorite={isFavorite(vehicle.id)}
+                    onToggleFavorite={toggleFavorite} 
                   />
                 </Col>
               ))

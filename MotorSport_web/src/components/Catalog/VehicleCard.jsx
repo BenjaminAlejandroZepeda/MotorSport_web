@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from "react";
 
-export function VehicleCard({ vehicle, onViewDetails, onFavoriteChange, isFavorite }) {
+export function VehicleCard({ vehicle, isFavorite, onToggleFavorite, onViewDetails }) {
   const [favorite, setFavorite] = useState(isFavorite);
-
 
   useEffect(() => {
     setFavorite(isFavorite);
   }, [isFavorite]);
 
-  const toggleFavorite = () => {
-    setFavorite(prev => !prev); 
-    onFavoriteChange();          
+  const toggle = () => {
+    setFavorite((prev) => !prev);
+    onToggleFavorite(vehicle.id);
   };
 
   return (
@@ -31,6 +30,7 @@ export function VehicleCard({ vehicle, onViewDetails, onFavoriteChange, isFavori
         <h3 style={{ textTransform: "capitalize", marginBottom: "0.5rem" }}>
           {vehicle.name}
         </h3>
+
         <p style={{ marginBottom: "1rem" }}>
           <strong>Fabricante:</strong> {vehicle.manufacturer} <br />
           <strong>Precio:</strong> ${vehicle.price.toLocaleString()} <br />
@@ -41,13 +41,13 @@ export function VehicleCard({ vehicle, onViewDetails, onFavoriteChange, isFavori
           <button
             className="primary"
             style={{ padding: "0.5rem 1rem", fontSize: "1rem" }}
-            onClick={onViewDetails}
+            onClick={() => onViewDetails(vehicle)}
           >
             Ver detalles
           </button>
 
           <button
-            onClick={toggleFavorite}
+            onClick={toggle}
             title={favorite ? "Quitar de favoritos" : "Agregar a favoritos"}
             style={{
               background: "none",

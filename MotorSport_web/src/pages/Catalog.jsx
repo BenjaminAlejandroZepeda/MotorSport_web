@@ -20,13 +20,13 @@ export default function Catalog() {
   const itemsPerPage = 12;
   const totalPages = Math.ceil(filteredVehicles.length / itemsPerPage);
 
-  
   const storedUser = JSON.parse(localStorage.getItem("currentUser") || "{}");
   const token = storedUser.token || "";
 
   const authConfig = token
     ? { headers: { Authorization: `Bearer ${token}` } }
     : {};
+
 
   useEffect(() => {
     const fetchVehicles = async () => {
@@ -46,6 +46,7 @@ export default function Catalog() {
     };
     fetchVehicles();
   }, []);
+
 
   useEffect(() => {
     if (!storedUser.id || !token) return;
@@ -87,24 +88,25 @@ export default function Catalog() {
 
   const handleShowDetail = (id) => setSelectedVehicleId(id);
 
-  const toggleFavorite = async (vehicle) => {
+
+  const toggleFavorite = async (vehicleId) => {
     if (!storedUser.id || !token) return;
 
-    const isFav = favorites.includes(vehicle.id);
+    const isFav = favorites.includes(vehicleId);
     try {
       if (isFav) {
         await axios.delete(
-          `http://localhost:8080/api/favorites/usuario/${storedUser.id}/vehiculo/${vehicle.id}`,
+          `http://localhost:8080/api/favorites/usuario/${storedUser.id}/vehiculo/${vehicleId}`,
           authConfig
         );
-        setFavorites((favs) => favs.filter((id) => id !== vehicle.id));
+        setFavorites((favs) => favs.filter((id) => id !== vehicleId));
       } else {
         await axios.post(
           "http://localhost:8080/api/favorites",
-          { user: { id: storedUser.id }, vehicle: { id: vehicle.id } },
+          { user: { id: storedUser.id }, vehicle: { id: vehicleId } },
           authConfig
         );
-        setFavorites((favs) => [...favs, vehicle.id]);
+        setFavorites((favs) => [...favs, vehicleId]);
       }
     } catch (err) {
       console.error("No se pudo actualizar el favorito. Revisa tus credenciales.", err);
@@ -151,7 +153,7 @@ export default function Catalog() {
                       <VehicleCard
                         vehicle={vehicle}
                         onViewDetails={() => handleShowDetail(vehicle.id)}
-                        onFavoriteChange={() => toggleFavorite(vehicle)}
+                        onToggleFavorite={toggleFavorite}
                         isFavorite={favorites.includes(vehicle.id)}
                       />
                     </div>
@@ -163,7 +165,7 @@ export default function Catalog() {
                       <VehicleCard
                         vehicle={vehicle}
                         onViewDetails={() => handleShowDetail(vehicle.id)}
-                        onFavoriteChange={() => toggleFavorite(vehicle)}
+                        onToggleFavorite={toggleFavorite}
                         isFavorite={favorites.includes(vehicle.id)}
                       />
                     </div>
@@ -177,7 +179,7 @@ export default function Catalog() {
                     <VehicleCard
                       vehicle={vehicle}
                       onViewDetails={() => handleShowDetail(vehicle.id)}
-                      onFavoriteChange={() => toggleFavorite(vehicle)}
+                      onToggleFavorite={toggleFavorite}
                       isFavorite={favorites.includes(vehicle.id)}
                     />
                   </Col>

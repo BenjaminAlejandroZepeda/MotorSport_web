@@ -17,7 +17,7 @@ export default function Cart() {
 
   const total = cart.reduce((sum, v) => sum + v.price * v.quantity, 0);
 
-  // Obtener usuario de localStorage al cargar el componente
+
   useEffect(() => {
     const storedUser = localStorage.getItem("currentUser");
     if (storedUser) {
@@ -40,14 +40,13 @@ export default function Cart() {
     setError(null);
 
     try {
-      // Configuración de autenticación con token actualizado
+     
       const authConfig = {
         headers: {
           Authorization: `Bearer ${currentUser.token}`,
         },
       };
 
-      // Crear orden
       const orderPayload = {
         userId: currentUser.id,
         fechaPedido: new Date().toISOString(),
@@ -66,7 +65,7 @@ export default function Cart() {
       );
       const order = orderRes.data;
 
-      // Generar factura
+   
       const facturaRes = await axios.post(
         `http://localhost:8080/api/facturas/generar/${order.id}`,
         null,
