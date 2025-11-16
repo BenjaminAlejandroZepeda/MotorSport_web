@@ -59,7 +59,7 @@ const Factura = ({ factura }) => {
     >
       <h2>Factura #{id}</h2>
       <p>
-        <strong>Correo del comprador:</strong> {nombreUsuario}
+        <strong>Nombre:</strong> {nombreUsuario}
       </p>
       <p>
         <strong>Fecha de Emisión:</strong>{" "}

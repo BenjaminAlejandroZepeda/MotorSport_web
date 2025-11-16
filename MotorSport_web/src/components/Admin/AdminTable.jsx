@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Table, Button } from "react-bootstrap";
-import vehiclesData from "../../vehicles.json";
+
 import AdminActionModal from "./AdminActionModal";
 
 export default function AdminTable({ type }) {
