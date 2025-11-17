@@ -17,7 +17,6 @@ export default function Cart() {
 
   const total = cart.reduce((sum, v) => sum + v.price * v.quantity, 0);
 
-
   useEffect(() => {
     const storedUser = localStorage.getItem("currentUser");
     if (storedUser) {
@@ -40,13 +39,11 @@ export default function Cart() {
     setError(null);
 
     try {
-     
       const authConfig = {
         headers: {
           Authorization: `Bearer ${currentUser.token}`,
         },
       };
-
       const orderPayload = {
         userId: currentUser.id,
         fechaPedido: new Date().toISOString(),
@@ -63,9 +60,9 @@ export default function Cart() {
         orderPayload,
         authConfig
       );
+
       const order = orderRes.data;
 
-   
       const facturaRes = await axios.post(
         `http://localhost:8080/api/facturas/generar/${order.id}`,
         null,
@@ -75,13 +72,31 @@ export default function Cart() {
         }
       );
 
-      setFactura(facturaRes.data);
+      const facturaGenerada = facturaRes.data;
+
+
+      for (const item of cart) {
+        await axios.post(
+          "http://localhost:8080/api/garage/add",
+          {
+            userId: currentUser.id,
+            vehicleId: item.id,
+            cantidad: item.quantity,
+          },
+          authConfig
+        );
+      }
+
+
+      setFactura(facturaGenerada);
       clearCart();
+
     } catch (err) {
-      console.error("Error al generar la factura:", err);
+      console.error("Error en el proceso del pago:", err);
+
       setError(
         err.response?.data?.message ||
-          "No se pudo generar la factura. Intenta nuevamente."
+          "No se pudo completar la operación. Intenta nuevamente."
       );
     } finally {
       setLoading(false);

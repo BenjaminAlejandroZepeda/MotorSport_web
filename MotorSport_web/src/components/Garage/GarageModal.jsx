@@ -3,12 +3,13 @@ import axios from "axios";
 
 export function GarageModal({ show, onHide, vehicle, user }) {
   const [rating, setRating] = useState(0);
+  const [comment, setComment] = useState("");
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (vehicle?.id && user?.id) {
-      
-      setRating(0); 
+    if (vehicle && user) {
+      setRating(0);
+      setComment("");
     }
   }, [vehicle, user]);
 
@@ -17,25 +18,43 @@ export function GarageModal({ show, onHide, vehicle, user }) {
 
     setLoading(true);
     try {
+
       const payload = {
-        vehicleId: vehicle.id,
-        userId: user.id,
+        user: {
+          id: user.id,
+          username: user.username,
+          email: user.email,
+          role: user.role,
+        },
+        vehicle: {
+          id: vehicle.id,
+          model: vehicle.model || vehicle.name,
+          manufacturer: vehicle.manufacturer || vehicle.fabricante,
+          price: vehicle.price ?? vehicle.precio,
+          seats: vehicle.seats ?? vehicle.pasajeros,
+        },
         puntuacion: rating,
-        comentario: "",
+        comentario: comment || "",
       };
 
-      await axios.post("http://localhost:8080/api/reviews", payload, {
-        auth: {
-          username: user.email, 
-          password: user.password,
-        },
-      });
+      await axios.post(
+        "http://localhost:8080/api/reviews",
+        payload,
+        {
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
+        }
+      );
 
-      
       setRating(0);
+      setComment("");
       onHide();
     } catch (err) {
       console.error("Error al guardar la reseña:", err);
+      alert(
+        err.response?.data?.message || "No se pudo guardar la reseña"
+      );
     } finally {
       setLoading(false);
     }
@@ -83,7 +102,7 @@ export function GarageModal({ show, onHide, vehicle, user }) {
         </button>
 
         <h2 style={{ textTransform: "capitalize", marginBottom: "1rem" }}>
-          {vehicle.model}
+          {vehicle.model || vehicle.name}
         </h2>
 
         <div style={{ display: "flex", gap: "1rem", marginBottom: "1rem" }}>
@@ -101,6 +120,14 @@ export function GarageModal({ show, onHide, vehicle, user }) {
             </span>
           ))}
         </div>
+
+        <textarea
+          placeholder="Escribe un comentario (opcional)"
+          className="review-textarea"
+          value={comment}
+          onChange={(e) => setComment(e.target.value)}
+          style={{ width: "100%", marginBottom: "1rem", padding: "0.5rem" }}
+        />
 
         <button
           className="primary"

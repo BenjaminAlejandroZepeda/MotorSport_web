@@ -1,24 +1,44 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function ReviewCard({ review, onUpdate }) {
   const [editing, setEditing] = useState(false);
   const [comentario, setComentario] = useState(review.comentario || "");
   const [puntuacion, setPuntuacion] = useState(review.puntuacion || 5);
 
+  // Sincroniza estado cuando review cambia
+  useEffect(() => {
+    setComentario(review.comentario || "");
+    setPuntuacion(review.puntuacion || 5);
+  }, [review]);
+
   const handleSave = () => {
-    onUpdate(review.id, { comentario, puntuacion });
+    const updatedData = {
+      comentario,
+      puntuacion,
+    };
+
+    onUpdate(review.id, updatedData);
     setEditing(false);
   };
 
+  const fechaFormateada = review.fecha
+    ? new Date(review.fecha).toLocaleString()
+    : "Fecha no disponible";
+
+  const modeloVehiculo =
+    review.vehicle?.model ||
+    review.vehicle?.manufacturer ||
+    review.vehicleId ||
+    "Vehículo desconocido";
+
   return (
     <div className="card review-card">
-      <h4 className="review-title">{review.vehicle?.model || review.vehicleId}</h4>
+  
+      <h4 className="review-title">{modeloVehiculo}</h4>
 
-   
       <p className="review-user">
         <strong>Usuario:</strong> {review.user?.username || "Desconocido"}
       </p>
-
 
       {editing ? (
         <div className="review-rating-edit">
@@ -51,7 +71,6 @@ export default function ReviewCard({ review, onUpdate }) {
         </p>
       )}
 
-    
       {editing ? (
         <textarea
           className="review-textarea"
@@ -64,7 +83,7 @@ export default function ReviewCard({ review, onUpdate }) {
         </p>
       )}
 
-      <p className="review-date">{new Date(review.fecha).toLocaleString()}</p>
+      <p className="review-date">{fechaFormateada}</p>
 
       {editing ? (
         <div className="review-buttons">
