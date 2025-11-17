@@ -1,15 +1,53 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 export function VehicleCard({ vehicle, isFavorite, onToggleFavorite, onViewDetails }) {
   const [favorite, setFavorite] = useState(isFavorite);
+  const [averageRating, setAverageRating] = useState(0);
+
+  const storedUser = localStorage.getItem("currentUser");
+  const currentUser = storedUser ? JSON.parse(storedUser) : null;
+  const token = currentUser?.token;
+  const authConfig = token
+    ? { headers: { Authorization: `Bearer ${token}` } }
+    : {};
 
   useEffect(() => {
     setFavorite(isFavorite);
-  }, [isFavorite]);
+
+    const fetchReviews = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8080/api/reviews/vehiculo/${vehicle.id}`,
+          authConfig 
+        );
+
+        const reviews = response.data; 
+        if (reviews && reviews.length > 0) {
+          const sum = reviews.reduce((acc, r) => acc + r.puntuacion, 0);
+          setAverageRating(Number((sum / reviews.length).toFixed(1))); 
+        } else {
+          setAverageRating(0);
+        }
+      } catch (err) {
+        console.error("Error al obtener reseñas:", err);
+        setAverageRating(0);
+      }
+    };
+
+    fetchReviews();
+  }, [isFavorite, vehicle, token]);
 
   const toggle = () => {
     setFavorite((prev) => !prev);
     onToggleFavorite(vehicle.id);
+  };
+
+  const renderStars = (rating) => {
+    const fullStars = "★".repeat(Math.floor(rating));
+    const halfStar = rating % 1 >= 0.5 ? "½" : "";
+    const emptyStars = "☆".repeat(5 - Math.ceil(rating));
+    return fullStars + halfStar + emptyStars;
   };
 
   return (
@@ -34,7 +72,8 @@ export function VehicleCard({ vehicle, isFavorite, onToggleFavorite, onViewDetai
         <p style={{ marginBottom: "1rem" }}>
           <strong>Fabricante:</strong> {vehicle.manufacturer} <br />
           <strong>Precio:</strong> ${vehicle.price.toLocaleString()} <br />
-          <strong>Pasajeros:</strong> {vehicle.seats}
+          <strong>Pasajeros:</strong> {vehicle.seats} <br />
+          <strong>Calificación:</strong> {averageRating} {renderStars(averageRating)}
         </p>
 
         <div style={{ display: "flex", justifyContent: "space-between" }}>
