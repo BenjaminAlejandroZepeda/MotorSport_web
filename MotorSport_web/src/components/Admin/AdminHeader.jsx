@@ -1,5 +1,6 @@
 import { Navbar, Nav, Container, Button, Offcanvas } from "react-bootstrap";
 import logo from "../layout/img/MotorSport_Logo.png";
+import ToggleButton from "../ToggleButton"; // 👈 importa el componente
 
 export default function AdminHeader({ onLogout, setTipo }) {
   const currentUser = JSON.parse(localStorage.getItem("currentUser"));
@@ -54,6 +55,7 @@ export default function AdminHeader({ onLogout, setTipo }) {
 
               <hr className="border-light" />
 
+              <ToggleButton />
               <Button variant="warning" onClick={onLogout}>
                 Cerrar sesión
               </Button>

@@ -138,7 +138,7 @@ export default function Cart() {
 
           <Col md={4}>
             <Card className="p-3 shadow-sm">
-              <h4>Total: ${total.toLocaleString()}</h4>
+              <h4 className="total-text">Total: ${total.toLocaleString()}</h4>
 
               <Form.Group className="mt-3">
                 <Form.Label>Método de Pago</Form.Label>

@@ -38,7 +38,9 @@ export default function VehicleStats({ vehicle }) {
             </Button>
           </Col>
           <Col xs={12} md={3} className="d-flex align-items-center justify-content-end">
-            <h5>${(vehicle.price * vehicle.quantity).toLocaleString()}</h5>
+            <h5 className="vehicle-total">
+              ${ (vehicle.price * vehicle.quantity).toLocaleString() }
+            </h5>
           </Col>
         </Row>
       </Card.Body>

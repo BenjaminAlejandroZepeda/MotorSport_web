@@ -54,7 +54,7 @@ export function VehicleCard({ vehicle, isFavorite, onToggleFavorite, onViewDetai
       />
 
       <div style={{ padding: "1rem" }}>
-        <h3 style={{ textTransform: "capitalize", marginBottom: "0.5rem" }}>
+        <h3 className="vehicle-title">
           {vehicle.name}
         </h3>
 

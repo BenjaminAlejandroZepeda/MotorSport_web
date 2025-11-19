@@ -548,6 +548,7 @@ label { color: var(--text-secondary); font-size: var(--font-size-caption); }
   font-size: var(--font-size-h3);
   margin-bottom: 0.25rem;
   text-transform: capitalize;
+  color: var(--text-primary);
 }
 
 .review-user,
@@ -618,4 +619,236 @@ label { color: var(--text-secondary); font-size: var(--font-size-caption); }
   gap: 1rem; 
   justify-content: center;
   padding: 1rem;
+}
+
+.modal-content {
+  background-color: var(--background-main);
+  color: var(--text-primary);
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  transition: all 0.3s ease;
+}
+
+.modal-header,
+.modal-footer {
+  background-color: var(--background-alt);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+
+:root.dark .modal-content {
+  background-color: var(--background-alt);
+  color: var(--text-primary);
+}
+
+:root.dark .modal-header,
+:root.dark .modal-footer {
+  background-color: var(--background-main);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+
+.btn-close {
+  filter: none;
+}
+
+:root.dark .btn-close {
+  filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+.table {
+  background-color: var(--background-main);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+
+.table thead th {
+  background-color: var(--background-alt);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+
+.table tbody tr {
+  background-color: var(--background-main);
+  color: var(--text-primary);
+  transition: background-color 0.2s ease;
+}
+
+.table-hover tbody tr:hover {
+  background-color: var(--background-alt);
+}
+
+.table-bordered th,
+.table-bordered td {
+  border-color: var(--border-color);
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+  background-color: var(--background-alt);
+}
+
+:root.dark .table {
+  background-color: var(--background-main);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+
+:root.dark .table thead th {
+  background-color: var(--background-alt);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+
+:root.dark .table tbody tr {
+  background-color: var(--background-main);
+  color: var(--text-primary);
+}
+
+:root.dark .table-hover tbody tr:hover {
+  background-color: var(--background-alt);
+}
+
+:root.dark .table-striped tbody tr:nth-of-type(odd) {
+  background-color: var(--background-alt);
+}
+
+.vehicle-title {
+  color: var(--text-primary);
+  font-size: var(--font-size-h3);
+  font-weight: 600;
+  text-transform: capitalize;
+  margin-bottom: 0.5rem;
+}
+
+:root.dark .vehicle-title {
+  color: var(--text-primary);
+}
+
+.vehicle-total {
+  color: var(--text-primary);
+  font-weight: 600;
+  font-size: 1.25rem;
+}
+
+:root.dark .vehicle-total {
+  color: var(--text-primary);
+}
+
+.total-text {
+  color: var(--text-primary);
+  font-weight: 600;
+  font-size: 1.25rem;
+}
+
+:root.dark .total-text {
+  color: var(--text-primary);
+}
+
+.card table {
+  width: 100%;
+  border-collapse: collapse;
+  color: var(--text-primary);
+}
+
+.card table th,
+.card table td {
+  border: 1px solid var(--border-color);
+  padding: 0.5rem;
+  text-align: left;
+  color: var(--text-primary);
+}
+
+.card h2,
+.card h3 {
+  color: var(--text-primary);
+}
+
+:root.dark .card table,
+:root.dark .card table th,
+:root.dark .card table td,
+:root.dark .card h2,
+:root.dark .card h3 {
+  color: var(--text-primary);
+}
+
+.card-title {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.card-text {
+  color: var(--text-primary);
+}
+
+.card ul,
+.card li {
+  color: var(--text-primary);
+}
+
+:root.dark .card-title,
+:root.dark .card-text,
+:root.dark .card ul,
+:root.dark .card li {
+  color: var(--text-primary);
+}
+
+:root.dark .review-title {
+  color: var(--text-primary);
+}
+
+.settings-dropdown .dropdown-menu {
+  background-color: var(--background-main);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+}
+
+.settings-dropdown .dropdown-item {
+  color: var(--text-primary);
+}
+
+.settings-dropdown .dropdown-item:hover {
+  background-color: var(--background-alt);
+  color: var(--color-primary);
+}
+
+.settings-dropdown .dropdown-divider {
+  border-color: var(--border-color);
+}
+
+:root.dark .settings-dropdown .dropdown-menu {
+  background-color: var(--background-alt);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+
+:root.dark .settings-dropdown .dropdown-item {
+  color: var(--text-primary);
+}
+
+:root.dark .settings-dropdown .dropdown-item:hover {
+  background-color: var(--background-main);
+  color: var(--color-primary);
+}
+
+.nav-link {
+  color: var(--text-primary);
+  transition: color 0.2s ease;
+}
+
+.nav-link:hover {
+  color: var(--color-primary);
+}
+
+.nav-link.active {
+  color: var(--color-primary); /* amarillo en tu sistema */
+  font-weight: 600;
+}
+
+:root.dark .nav-link {
+  color: var(--text-primary); /* blanco */
+}
+
+
+:root.dark .nav-link.active {
+  color: var(--color-primary); /* amarillo */
 }
