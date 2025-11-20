@@ -21,7 +21,7 @@ export default function RegisterForm() {
     try {
       const newUser = { username, email, password, role: "user" };
 
-      const response = await axios.post("http://localhost:8080/api/users/register", newUser);
+      const response = await axios.post("http://18.233.90.202:8080/api/users/register", newUser);
 
       if (response.status === 200) {
         setMessage("Usuario registrado con éxito. Redirigiendo al login...");

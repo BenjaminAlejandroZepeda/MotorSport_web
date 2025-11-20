@@ -17,7 +17,7 @@ export default function LoginForm() {
 
     try {
       const response = await axios.post(
-        "http://localhost:8080/api/users/login",
+        "http://18.233.90.202:8080/api/users/login",
         { email, password }
       );
 
