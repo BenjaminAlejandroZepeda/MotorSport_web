@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Container, Row, Col, Card, Button, Form } from "react-bootstrap";
-import axios from "axios";
+import axios from "../axiosConfig"; 
 import { useCartStore } from "../store/cartStore";
 import VehicleStats from "../components/Cart/VehicleStats";
 import MainLayout from "../components/layout/MainLayout";
@@ -39,11 +39,6 @@ export default function Cart() {
     setError(null);
 
     try {
-      const authConfig = {
-        headers: {
-          Authorization: `Bearer ${currentUser.token}`,
-        },
-      };
       const orderPayload = {
         userId: currentUser.id,
         fechaPedido: new Date().toISOString(),
@@ -55,45 +50,30 @@ export default function Cart() {
         })),
       };
 
-      const orderRes = await axios.post(
-        "http://localhost:8080/api/orders",
-        orderPayload,
-        authConfig
-      );
-
+      const orderRes = await axios.post("/api/orders", orderPayload);
       const order = orderRes.data;
 
       const facturaRes = await axios.post(
-        `http://localhost:8080/api/facturas/generar/${order.id}`,
+        `/api/facturas/generar/${order.id}`,
         null,
         {
-          ...authConfig,
           params: { metodoPago, tipoDocumento },
         }
       );
-
       const facturaGenerada = facturaRes.data;
 
-
       for (const item of cart) {
-        await axios.post(
-          "http://localhost:8080/api/garage/add",
-          {
-            userId: currentUser.id,
-            vehicleId: item.id,
-            cantidad: item.quantity,
-          },
-          authConfig
-        );
+        await axios.post("/api/garage/add", {
+          userId: currentUser.id,
+          vehicleId: item.id,
+          cantidad: item.quantity,
+        });
       }
-
 
       setFactura(facturaGenerada);
       clearCart();
-
     } catch (err) {
       console.error("Error en el proceso del pago:", err);
-
       setError(
         err.response?.data?.message ||
           "No se pudo completar la operación. Intenta nuevamente."

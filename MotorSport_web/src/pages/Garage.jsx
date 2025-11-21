@@ -4,7 +4,7 @@ import MainLayout from "../components/layout/MainLayout";
 import { VehicleFilters } from "../components/Catalog/VehicleFilters";
 import { GarageCard } from "../components/Garage/GarageCard";
 import { GarageModal } from "../components/Garage/GarageModal";
-import axios from "axios";
+import axios from "../axiosConfig"; 
 
 export default function Garage() {
   const [vehicles, setVehicles] = useState([]);
@@ -18,27 +18,19 @@ export default function Garage() {
   const storedUser = JSON.parse(localStorage.getItem("currentUser") || "{}");
   const token = storedUser.token || "";
 
-  const authConfig = token
-    ? { headers: { Authorization: `Bearer ${token}` } }
-    : {};
-
   const totalPages = Math.ceil(filteredVehicles.length / itemsPerPage);
 
-  
   useEffect(() => {
     const fetchGarage = async () => {
       if (!token) return;
 
       try {
-        const res = await axios.get(
-          "http://localhost:8080/api/garage",
-          authConfig
-        );
+        const res = await axios.get("/api/garage");
 
         const autos = res.data.map((item) => ({
           ...item.vehicle,
           fechaCompra: item.fechaCompra,
-          garageId: item.id, 
+          garageId: item.id,
         }));
 
         setVehicles(autos);
@@ -56,14 +48,12 @@ export default function Garage() {
     fetchGarage();
   }, [token]);
 
-  
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 768);
     handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-
 
   const handleFilter = (filters) => {
     const result = vehicles.filter((v) => {
@@ -85,7 +75,10 @@ export default function Garage() {
         false;
 
       return (
-        matchesPrice && matchesManufacturer && matchesPassengers && matchesSearch
+        matchesPrice &&
+        matchesManufacturer &&
+        matchesPassengers &&
+        matchesSearch
       );
     });
 
@@ -93,9 +86,7 @@ export default function Garage() {
     setCurrentPage(1);
   };
 
-
   const handleViewDetails = (vehicle) => setSelectedVehicle(vehicle);
-
 
   const paginatedVehicles = filteredVehicles.slice(
     (currentPage - 1) * itemsPerPage,
@@ -108,7 +99,6 @@ export default function Garage() {
         <h1 className="text-center mb-4">Mi Garaje</h1>
 
         <Row>
-          
           {isMobile ? (
             <Navbar className="mobile-navbar mb-3 d-md-none">
               <Container>
@@ -119,7 +109,10 @@ export default function Garage() {
                     className="w-100"
                   >
                     <div className="dropdown-filters scrollable-dropdown px-3 py-2">
-                      <VehicleFilters vehicles={vehicles} onFilter={handleFilter} />
+                      <VehicleFilters
+                        vehicles={vehicles}
+                        onFilter={handleFilter}
+                      />
                     </div>
                   </NavDropdown>
                 </Nav>
@@ -132,13 +125,17 @@ export default function Garage() {
           )}
 
           <Col md={isMobile ? 12 : 9}>
-       
             {paginatedVehicles.length === 0 ? (
               <p className="text-center">Tu garaje está vacío</p>
             ) : (
               <Row className="vehicle-grid">
                 {paginatedVehicles.map((vehicle) => (
-                  <Col key={`${vehicle.id}-${vehicle.garageId}`} xs={12} md={6} lg={4}>
+                  <Col
+                    key={`${vehicle.id}-${vehicle.garageId}`}
+                    xs={12}
+                    md={6}
+                    lg={4}
+                  >
                     <GarageCard
                       vehicle={vehicle}
                       onViewDetails={() => handleViewDetails(vehicle)}
@@ -148,12 +145,13 @@ export default function Garage() {
               </Row>
             )}
 
-         
             <div className="pagination-numbers d-flex justify-content-center mt-3 flex-wrap gap-2">
               {Array.from({ length: totalPages }, (_, index) => (
                 <button
                   key={index + 1}
-                  className={`page-number ${currentPage === index + 1 ? "active" : ""}`}
+                  className={`page-number ${
+                    currentPage === index + 1 ? "active" : ""
+                  }`}
                   onClick={() => setCurrentPage(index + 1)}
                 >
                   {index + 1}
@@ -163,7 +161,6 @@ export default function Garage() {
           </Col>
         </Row>
 
-      
         {selectedVehicle && (
           <GarageModal
             show={!!selectedVehicle}

@@ -1,7 +1,7 @@
 import { Card, Button, Collapse } from "react-bootstrap";
 import Factura from "../layout/Factura";
 import { useState } from "react";
-import axios from "axios";
+import axios from "../../axiosConfig";
 
 export function PedidoCard({ pedido }) {
   const [showFactura, setShowFactura] = useState(false);
@@ -12,7 +12,6 @@ export function PedidoCard({ pedido }) {
 
   const storedUser = JSON.parse(localStorage.getItem("currentUser") || "{}");
   const token = storedUser.token || "";
-  const authConfig = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
 
   const handleVerFactura = async () => {
     if (!token) {
@@ -27,10 +26,7 @@ export function PedidoCard({ pedido }) {
 
     setLoadingFactura(true);
     try {
-      const res = await axios.get(
-        `http://localhost:8080/api/facturas/orden/${pedido.id}`,
-        authConfig
-      );
+      const res = await axios.get(`/api/facturas/orden/${pedido.id}`);
       setFactura(res.data);
       setShowFactura(true);
     } catch (err) {
@@ -46,7 +42,8 @@ export function PedidoCard({ pedido }) {
       <Card.Body>
         <Card.Title>Pedido #{pedido.id}</Card.Title>
         <Card.Text>
-          <strong>Fecha de compra:</strong> {new Date(pedido.fechaPedido).toLocaleString()} <br />
+          <strong>Fecha de compra:</strong>{" "}
+          {new Date(pedido.fechaPedido).toLocaleString()} <br />
           <strong>Estado:</strong> {pedido.estado || "Pendiente"} <br />
           <strong>Total:</strong> ${total.toLocaleString()}
         </Card.Text>
@@ -54,7 +51,8 @@ export function PedidoCard({ pedido }) {
         <ul>
           {pedido.items?.map((item) => (
             <li key={item.id}>
-              {item.vehicle?.model || item.vehicle?.id} ({item.cantidad} x ${item.precioUnitario.toLocaleString()})
+              {item.vehicle?.model || item.vehicle?.id} (
+              {item.cantidad} x ${item.precioUnitario.toLocaleString()})
             </li>
           ))}
         </ul>

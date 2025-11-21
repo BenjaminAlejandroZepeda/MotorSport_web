@@ -27,7 +27,7 @@ export default function MyReviews() {
     const fetchReviews = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:8080/api/reviews/usuario/${currentUser.id}`,
+          `http://18.233.90.202:8080/api/reviews/usuario/${currentUser.id}`,
           authConfig
         );
         setReviews(res.data);
@@ -54,7 +54,7 @@ export default function MyReviews() {
 
     try {
       const res = await axios.put(
-        `http://localhost:8080/api/reviews/${id}`,
+        `http://18.233.90.202:8080/api/reviews/${id}`,
         updatedData,
         authConfig
       );

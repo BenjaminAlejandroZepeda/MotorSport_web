@@ -10,7 +10,7 @@ export function VehicleFilters({ vehicles, onFilter }) {
   const manufacturers = Array.from(
     new Set(
       (vehicles || [])
-        .filter((v) => v && v.manufacturer) // 🔧 evita undefined
+        .filter((v) => v && v.manufacturer) 
         .map((v) => v.manufacturer)
     )
   );

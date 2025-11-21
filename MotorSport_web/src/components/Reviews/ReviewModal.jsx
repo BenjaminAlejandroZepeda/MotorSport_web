@@ -15,7 +15,7 @@ export function ReviewModal({ show, onHide, vehicleId }) {
     if (show && vehicleId && token) {
       setLoading(true);
       axios
-        .get(`http://localhost:8080/api/reviews/vehiculo/${vehicleId}`, authConfig)
+        .get(`http://18.233.90.202:8080/api/reviews/vehiculo/${vehicleId}`, authConfig)
         .then((res) => setReviews(res.data))
         .catch((err) => console.error("Error al obtener reseñas:", err))
         .finally(() => setLoading(false));

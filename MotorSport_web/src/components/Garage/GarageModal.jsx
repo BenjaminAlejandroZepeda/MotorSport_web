@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import axios from "../../axiosConfig";
 
 export function GarageModal({ show, onHide, vehicle, user }) {
   const [rating, setRating] = useState(0);
@@ -18,7 +18,6 @@ export function GarageModal({ show, onHide, vehicle, user }) {
 
     setLoading(true);
     try {
-
       const payload = {
         user: {
           id: user.id,
@@ -37,15 +36,7 @@ export function GarageModal({ show, onHide, vehicle, user }) {
         comentario: comment || "",
       };
 
-      await axios.post(
-        "http://localhost:8080/api/reviews",
-        payload,
-        {
-          headers: {
-            Authorization: `Bearer ${user.token}`,
-          },
-        }
-      );
+      await axios.post("/api/reviews", payload);
 
       setRating(0);
       setComment("");

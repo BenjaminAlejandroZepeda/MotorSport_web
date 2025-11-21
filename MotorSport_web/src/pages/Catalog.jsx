@@ -7,7 +7,7 @@ import { VehicleDetail } from "../components/Catalog/VehicleDetail";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
-import axios from "../axiosConfig";
+import axios from "../axiosConfig"; 
 
 export default function Catalog() {
   const [vehicles, setVehicles] = useState([]);
@@ -22,7 +22,7 @@ export default function Catalog() {
 
   const storedUser = JSON.parse(localStorage.getItem("currentUser") || "{}");
 
-  // 🔎 Cargar vehículos
+  
   useEffect(() => {
     const fetchVehicles = async () => {
       try {
@@ -42,7 +42,7 @@ export default function Catalog() {
     fetchVehicles();
   }, []);
 
-  // 🔎 Cargar favoritos del usuario autenticado
+  
   useEffect(() => {
     if (!storedUser.id) return;
 
@@ -50,7 +50,7 @@ export default function Catalog() {
       try {
         const res = await axios.get(`/api/favorites/usuario/${storedUser.id}`);
         const favIds = res.data
-          .filter((f) => f.vehicleId) // el DTO ya trae vehicleId
+          .filter((f) => f.vehicleId) 
           .map((f) => f.vehicleId);
         setFavorites(favIds);
       } catch (err) {
@@ -60,7 +60,7 @@ export default function Catalog() {
     fetchFavorites();
   }, [storedUser.id]);
 
-  // 🔎 Responsive
+  
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 768);
     handleResize();
@@ -68,7 +68,7 @@ export default function Catalog() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // 🔎 Filtros
+  
   const handleFilter = (filters) => {
     const result = vehicles.filter((v) => {
       const matchesPrice = v.price >= filters.minPrice && v.price <= filters.maxPrice;
@@ -84,7 +84,7 @@ export default function Catalog() {
 
   const handleShowDetail = (id) => setSelectedVehicleId(id);
 
-  // 🔎 Toggle favoritos
+  
   const toggleFavorite = async (vehicleId) => {
     if (!storedUser.id) return;
 
@@ -94,7 +94,7 @@ export default function Catalog() {
         await axios.delete(`/api/favorites/vehiculo/${vehicleId}`);
         setFavorites((favs) => favs.filter((id) => id !== vehicleId));
       } else {
-        await axios.post("/api/favorites", { vehicleId }); // ✅ solo vehicleId
+        await axios.post("/api/favorites", { vehicleId }); 
         setFavorites((favs) => [...favs, vehicleId]);
       }
     } catch (err) {
